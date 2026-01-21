@@ -59,6 +59,8 @@ public class C_Batiment {
         unBatiment.setCode(code);
         unBatiment.setLibelle(libelle);
         unBatiment.setCommentaire(commentaire);
+        unBatiment.update();
+        aff_CMS_Batiment();
     }
 
     public boolean batimentExiste(String code, String libelle) throws Exception {

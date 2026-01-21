@@ -4,18 +4,16 @@
  */
 package pj_sonde.View;
 
-import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
-import pj_sonde.Controler.C_Sonde;
 import pj_sonde.Db_mariadb;
 import pj_sonde.Model.*;
-import pj_sonde.View.V_CMS_Sonde;
 import pj_sonde.Controler.C_Batiment;
 
 /**
@@ -29,6 +27,7 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
     LinkedHashMap<Integer, M_Batiment> lesBatiments;
 
     int idBatiment;
+    boolean modeEdition;
 
     Db_mariadb baseType;
     DefaultTableModel dm_tb_batiment;
@@ -54,13 +53,14 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
         this.setLocationRelativeTo(null);
         pn_CMS_Sonde.setVisible(false);
         pn_btn.setVisible(false);
+        btn_save.setVisible(false);
 
         aff_Tableau();
 
         setVisible(true);
     }
 
-    public void aff_Tableau() {
+    private void aff_Tableau() {
         int ligne = 0;
 
         tb_Batiment.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -105,6 +105,13 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
         });
     }
 
+    private void exit() {
+        pn_table.setVisible(true);
+        pn_btn.setVisible(false);
+        tb_Batiment.clearSelection();
+        pn_CMS_Sonde.setVisible(false);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -131,6 +138,7 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
         jScrollPane2 = new javax.swing.JScrollPane();
         ta_commentaire = new javax.swing.JTextArea();
         btn_exit = new javax.swing.JButton();
+        btn_save = new javax.swing.JButton();
         pn_table = new javax.swing.JPanel();
         sp_batiment = new javax.swing.JScrollPane();
         tb_Batiment = new javax.swing.JTable();
@@ -195,6 +203,13 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
             }
         });
 
+        btn_save.setText("Save");
+        btn_save.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_saveActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pn_CMS_SondeLayout = new javax.swing.GroupLayout(pn_CMS_Sonde);
         pn_CMS_Sonde.setLayout(pn_CMS_SondeLayout);
         pn_CMS_SondeLayout.setHorizontalGroup(
@@ -204,31 +219,35 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
                 .addComponent(lb_titre)
                 .addGap(381, 381, 381))
             .addGroup(pn_CMS_SondeLayout.createSequentialGroup()
-                .addGap(197, 197, 197)
                 .addGroup(pn_CMS_SondeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pn_CMS_SondeLayout.createSequentialGroup()
-                        .addGap(65, 65, 65)
-                        .addGroup(pn_CMS_SondeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(lb_id)
-                            .addComponent(lb_code)
-                            .addComponent(lb_nom))
-                        .addGap(26, 26, 26)
-                        .addGroup(pn_CMS_SondeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(ftf_id, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)
-                            .addComponent(ftf_code)
-                            .addComponent(ftf_nom)))
-                    .addComponent(pn_commentaire, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(197, 197, 197)
+                        .addGroup(pn_CMS_SondeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(pn_CMS_SondeLayout.createSequentialGroup()
+                                .addGap(65, 65, 65)
+                                .addGroup(pn_CMS_SondeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(lb_id)
+                                    .addComponent(lb_code)
+                                    .addComponent(lb_nom))
+                                .addGap(26, 26, 26)
+                                .addGroup(pn_CMS_SondeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(ftf_id, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)
+                                    .addComponent(ftf_code)
+                                    .addComponent(ftf_nom)))
+                            .addComponent(pn_commentaire, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(pn_CMS_SondeLayout.createSequentialGroup()
+                                .addGap(6, 6, 6)
+                                .addGroup(pn_CMS_SondeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(lb_created_at)
+                                    .addComponent(lb_update_at))
+                                .addGap(26, 26, 26)
+                                .addGroup(pn_CMS_SondeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(ftf_updated_at, javax.swing.GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE)
+                                    .addComponent(ftf_created_at)))))
                     .addGroup(pn_CMS_SondeLayout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addGroup(pn_CMS_SondeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(lb_created_at)
-                            .addComponent(lb_update_at))
-                        .addGap(26, 26, 26)
-                        .addGroup(pn_CMS_SondeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(ftf_created_at, javax.swing.GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE)
-                            .addComponent(ftf_updated_at)))
-                    .addGroup(pn_CMS_SondeLayout.createSequentialGroup()
-                        .addGap(173, 173, 173)
+                        .addGap(259, 259, 259)
+                        .addComponent(btn_save, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btn_exit, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -259,9 +278,11 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
                 .addGroup(pn_CMS_SondeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lb_update_at)
                     .addComponent(ftf_updated_at, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(37, 37, 37)
-                .addComponent(btn_exit, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(215, Short.MAX_VALUE))
+                .addGap(44, 44, 44)
+                .addGroup(pn_CMS_SondeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btn_save, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_exit, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(208, Short.MAX_VALUE))
         );
 
         tb_Batiment.setModel(new javax.swing.table.DefaultTableModel(
@@ -368,11 +389,13 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(pn_CMS_Sonde, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addComponent(pn_table, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(14, 14, 14)
+                        .addComponent(pn_table, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(pn_CMS_Sonde, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(57, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -380,9 +403,9 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(pn_CMS_Sonde, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addComponent(pn_table, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(824, Short.MAX_VALUE))
+                .addContainerGap(812, Short.MAX_VALUE))
         );
 
         pack();
@@ -394,6 +417,12 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
 
     private void btn_detailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_detailsActionPerformed
         pn_table.setVisible(false);
+        ftf_code.setEditable(false);
+        ftf_created_at.setEditable(false);
+        ftf_id.setEditable(false);
+        ftf_nom.setEditable(false);
+        ftf_updated_at.setEditable(false);
+        ta_commentaire.setEditable(false);
         pn_CMS_Sonde.setVisible(true);
     }//GEN-LAST:event_btn_detailsActionPerformed
 
@@ -405,15 +434,37 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
                     "Erreur de sélection",
                     JOptionPane.ERROR_MESSAGE);
         } else {
-            
+            modeEdition = true;
+            pn_table.setVisible(true);
+            ftf_id.setEditable(false);
+            ftf_code.setEditable(true);
+            ftf_nom.setEditable(true);
+            ta_commentaire.setEditable(true);
+
+            ftf_created_at.setVisible(false);
+            ftf_updated_at.setEditable(false);
+
+            btn_save.setVisible(true);
+            btn_exit.setText("Annuler");
+            pn_CMS_Sonde.setVisible(true);
         }
     }//GEN-LAST:event_btn_modifActionPerformed
 
     private void btn_exitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_exitActionPerformed
-        pn_table.setVisible(true);
-        pn_btn.setVisible(false);
-        tb_Batiment.clearSelection();
-        pn_CMS_Sonde.setVisible(false);
+        if (modeEdition) {
+            int reponse = JOptionPane.showConfirmDialog(
+                    this,
+                    "Êtes-vous sûr de vouloir annuler votre saisie ?",
+                    "Confirmation",
+                    JOptionPane.YES_NO_OPTION);
+            if (reponse == JOptionPane.YES_OPTION) {
+                exit();
+                btn_exit.setText("Fermer");
+                modeEdition = false;
+            }
+        } else {
+            exit();
+        }
     }//GEN-LAST:event_btn_exitActionPerformed
 
     private void btn_suppActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_suppActionPerformed
@@ -445,6 +496,55 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
         }
 
     }//GEN-LAST:event_btn_suppActionPerformed
+
+    private void btn_saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_saveActionPerformed
+        String vCode = ftf_code.getText();
+        String vLibelle = ftf_nom.getText();
+        String vCommentaire = ta_commentaire.getText();
+        int vId;
+        // Vérification des champs texte
+        JTextField[] champs = new JTextField[]{ftf_id, ftf_code, ftf_nom};
+        for (JTextField champ : champs) {
+            if (champ.getText() == null || champ.getText().isBlank()) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Veuillez remplir tous les champs",
+                        "Erreur",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }
+        if (ta_commentaire.getText() == null || ta_commentaire.getText().isBlank()) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Veuillez remplir tous les champs",
+                    "Erreur",
+                    JOptionPane.ERROR_MESSAGE
+            );
+            return;
+        }
+        // Vérification et conversion de l'ID
+        try {
+            vId = Integer.parseInt(ftf_id.getText());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "ID invalide",
+                    "Erreur",
+                    JOptionPane.ERROR_MESSAGE
+            );
+            return;
+        }
+        // Appel de la modification
+        try {
+            gestionBatiment.modif_batiment(vId, vCode, vLibelle, vCommentaire);
+            btn_exit.setText("Fermer");
+            modeEdition = false;
+        } catch (Exception ex) {
+            Logger.getLogger(V_CMS_Batiment.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }//GEN-LAST:event_btn_saveActionPerformed
 
     /**
      * @param args the command line arguments
@@ -492,6 +592,7 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
     private javax.swing.JButton btn_details;
     private javax.swing.JButton btn_exit;
     private javax.swing.JButton btn_modif;
+    private javax.swing.JButton btn_save;
     private javax.swing.JButton btn_supp;
     private javax.swing.JFormattedTextField ftf_code;
     private javax.swing.JFormattedTextField ftf_created_at;
