@@ -4,16 +4,22 @@
  */
 package pj_sonde;
 
+import java.awt.Dimension;
+import java.awt.Image;
 import java.sql.SQLException;
+import java.util.HashMap;
 import pj_sonde.Model.*;
 import pj_sonde.View.*;
-
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import pj_sonde.Controler.C_Sonde;
-import pj_sonde.Controler.C_Sonde;
-import pj_sonde.C_Main;
 import pj_sonde.Controler.C_Batiment;
 
 /**
@@ -23,25 +29,84 @@ import pj_sonde.Controler.C_Batiment;
 public class V_Main extends javax.swing.JFrame {
 
     private V_CMS_Sonde frm_CMS_Sonde;
+
     private C_Main gestionProjet;
     private C_Sonde gestionSondes;
     private C_Batiment gestionBatiment;
-    private M_Sonde uneSonde;
-    LinkedHashMap<Integer, M_Sonde> lesSondes;
-    Integer uneCle;
+
+    private LinkedHashMap<Integer, M_Autorisation> listeAutorisation;
+    private final Map<String, Object> menuMap = new HashMap<>();
+
+    private M_Autorisation uneAutorisation;
+    private M_User unUtil;
+
+    private int idRole;
+    private boolean passwordVisible = false;
+
+    private Object unObjet;
+    private String classe;
+
+    private JMenu mn;
+    private JMenuItem mi;
+
+    private ImageIcon eyeOpen;
+    private ImageIcon eyeClosed;
 
     public V_Main(C_Main gestionProjetSonde) {
         this.gestionProjet = gestionProjetSonde;
         initComponents();
     }
 
+    private void initPasswordToggle() {
+        ImageIcon iconOpen = new ImageIcon(
+                getClass().getResource("/images/see.png")
+        );
+        ImageIcon iconClosed = new ImageIcon(
+                getClass().getResource("/images/hide.png")
+        );
+
+        Image imgOpen = iconOpen.getImage().getScaledInstance(38, 38, Image.SCALE_SMOOTH);
+        Image imgClosed = iconClosed.getImage().getScaledInstance(38, 38, Image.SCALE_SMOOTH);
+
+        eyeOpen = new ImageIcon(imgOpen);
+        eyeClosed = new ImageIcon(imgClosed);
+
+        btn_hide.setIcon(eyeClosed);
+
+        btn_hide.setBorderPainted(false);
+        btn_hide.setContentAreaFilled(false);
+        btn_hide.setFocusPainted(false);
+        btn_hide.setOpaque(false);
+
+        btn_hide.setPreferredSize(new Dimension(24, 24));
+    }
+
     public void afficher(C_Sonde gestionSondes, C_Batiment gestionBatiment) {
         this.gestionBatiment = gestionBatiment;
         this.gestionSondes = gestionSondes;
         this.setTitle("Gestion des sondes & bâtiments ");
-        this.setSize(1080, 720);
+        this.setSize(450, 500);
         this.setLocationRelativeTo(null);
+        scanMenus(mb_menu);
+        initPasswordToggle();
         setVisible(true);
+    }
+
+    private void scanMenus(JMenuBar menuBar) {
+        for (int i = 0; i < menuBar.getMenuCount(); i++) {
+            mn = menuBar.getMenu(i);
+            menuMap.put(mn.getName(), mn);
+            if (!"mn_fichier".equals(mn.getName())) {
+                mn.setVisible(false);
+            }
+            for (int j = 0; j < mn.getItemCount(); j++) {
+                mi = mn.getItem(j);
+                menuMap.put(mi.getName(), mi);
+                if (!"mi_quitter".equals(mi.getName())) {
+                    mi.setVisible(false);
+                }
+            }
+        }
     }
 
     /**
@@ -53,15 +118,33 @@ public class V_Main extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        pn_connexion = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        btn_login = new javax.swing.JButton();
+        tf_login = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        pf_password = new javax.swing.JPasswordField();
+        btn_hide = new javax.swing.JButton();
         mb_menu = new javax.swing.JMenuBar();
         mn_fichier = new javax.swing.JMenu();
         mi_quitter = new javax.swing.JMenuItem();
+        mi_logout = new javax.swing.JMenuItem();
+        mn_admin = new javax.swing.JMenu();
+        mi_role = new javax.swing.JMenuItem();
+        mi_util = new javax.swing.JMenuItem();
         mn_sonde = new javax.swing.JMenu();
         mi_consult_sonde = new javax.swing.JMenuItem();
         mi_ajout_sonde = new javax.swing.JMenuItem();
         mn_batiment = new javax.swing.JMenu();
         mi_consult_bat = new javax.swing.JMenuItem();
         mi_ajout_bat = new javax.swing.JMenuItem();
+        mn_salle = new javax.swing.JMenu();
+        mi_consult_salle = new javax.swing.JMenuItem();
+        mi_ajout_salle = new javax.swing.JMenuItem();
+        mn_compte = new javax.swing.JMenu();
+        mi_info = new javax.swing.JMenuItem();
+        mi_parametre = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -70,9 +153,73 @@ public class V_Main extends javax.swing.JFrame {
             }
         });
 
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
+        jLabel1.setText("Connection");
+
+        btn_login.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        btn_login.setText("Se connecter");
+        btn_login.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_loginActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel2.setText("Password");
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel3.setText("Login");
+
+        btn_hide.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_hideActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pn_connexionLayout = new javax.swing.GroupLayout(pn_connexion);
+        pn_connexion.setLayout(pn_connexionLayout);
+        pn_connexionLayout.setHorizontalGroup(
+            pn_connexionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pn_connexionLayout.createSequentialGroup()
+                .addContainerGap(106, Short.MAX_VALUE)
+                .addGroup(pn_connexionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
+                    .addComponent(pf_password)
+                    .addComponent(tf_login, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btn_login, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btn_hide, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(80, 80, 80))
+        );
+        pn_connexionLayout.setVerticalGroup(
+            pn_connexionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pn_connexionLayout.createSequentialGroup()
+                .addGap(47, 47, 47)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(61, 61, 61)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(tf_login, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pn_connexionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pf_password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_hide))
+                .addGap(18, 18, 18)
+                .addComponent(btn_login, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(166, Short.MAX_VALUE))
+        );
+
+        mb_menu.setName("mb_menu"); // NOI18N
+
         mn_fichier.setText("Fichier");
+        mn_fichier.setName("mn_fichier"); // NOI18N
 
         mi_quitter.setText("Quitter");
+        mi_quitter.setName("mi_quitter"); // NOI18N
         mi_quitter.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mi_quitterActionPerformed(evt);
@@ -80,11 +227,35 @@ public class V_Main extends javax.swing.JFrame {
         });
         mn_fichier.add(mi_quitter);
 
+        mi_logout.setText("Déconnexion");
+        mi_logout.setName("mi_logout"); // NOI18N
+        mi_logout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mi_logoutActionPerformed(evt);
+            }
+        });
+        mn_fichier.add(mi_logout);
+
         mb_menu.add(mn_fichier);
 
+        mn_admin.setText("Paramétrages");
+        mn_admin.setName("mn_admin"); // NOI18N
+
+        mi_role.setText("Role");
+        mi_role.setName("mi_role"); // NOI18N
+        mn_admin.add(mi_role);
+
+        mi_util.setText("Utilisateur");
+        mi_util.setName("mi_util"); // NOI18N
+        mn_admin.add(mi_util);
+
+        mb_menu.add(mn_admin);
+
         mn_sonde.setText("Sonde");
+        mn_sonde.setName("mn_sonde"); // NOI18N
 
         mi_consult_sonde.setText("Consultation Sonde");
+        mi_consult_sonde.setName("mi_consult_sonde"); // NOI18N
         mi_consult_sonde.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mi_consult_sondeActionPerformed(evt);
@@ -93,13 +264,16 @@ public class V_Main extends javax.swing.JFrame {
         mn_sonde.add(mi_consult_sonde);
 
         mi_ajout_sonde.setText("Ajout sonde");
+        mi_ajout_sonde.setName("mi_ajout_sonde"); // NOI18N
         mn_sonde.add(mi_ajout_sonde);
 
         mb_menu.add(mn_sonde);
 
         mn_batiment.setText("Bâtiment");
+        mn_batiment.setName("mn_batiment"); // NOI18N
 
         mi_consult_bat.setText("Consultation bâtiments");
+        mi_consult_bat.setName("mi_consult_bat"); // NOI18N
         mi_consult_bat.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mi_consult_batActionPerformed(evt);
@@ -108,6 +282,7 @@ public class V_Main extends javax.swing.JFrame {
         mn_batiment.add(mi_consult_bat);
 
         mi_ajout_bat.setText("Ajout bâtiment");
+        mi_ajout_bat.setName("mi_ajout_bat"); // NOI18N
         mi_ajout_bat.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mi_ajout_batActionPerformed(evt);
@@ -117,17 +292,43 @@ public class V_Main extends javax.swing.JFrame {
 
         mb_menu.add(mn_batiment);
 
+        mn_salle.setText("Salles");
+        mn_salle.setName("mn_salle"); // NOI18N
+
+        mi_consult_salle.setText("Consultation salles");
+        mi_consult_salle.setName("mi_consult_salle"); // NOI18N
+        mn_salle.add(mi_consult_salle);
+
+        mi_ajout_salle.setText("Ajout salles");
+        mi_ajout_salle.setName("mi_ajout_salle"); // NOI18N
+        mn_salle.add(mi_ajout_salle);
+
+        mb_menu.add(mn_salle);
+
+        mn_compte.setText("Compte");
+        mn_compte.setName("mn_compte"); // NOI18N
+
+        mi_info.setText("Mes informations");
+        mi_info.setName("mi_info"); // NOI18N
+        mn_compte.add(mi_info);
+
+        mi_parametre.setText("Paramètre");
+        mi_parametre.setName("mi_parametre"); // NOI18N
+        mn_compte.add(mi_parametre);
+
+        mb_menu.add(mn_compte);
+
         setJMenuBar(mb_menu);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addComponent(pn_connexion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 277, Short.MAX_VALUE)
+            .addComponent(pn_connexion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -135,6 +336,7 @@ public class V_Main extends javax.swing.JFrame {
 
     private void mi_quitterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mi_quitterActionPerformed
         gestionProjet.close();
+        this.formWindowClosing(null);
         System.exit(0);
     }//GEN-LAST:event_mi_quitterActionPerformed
 
@@ -144,7 +346,7 @@ public class V_Main extends javax.swing.JFrame {
 
     private void mi_consult_sondeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mi_consult_sondeActionPerformed
         try {
-            gestionSondes.aff_CMS_Sonde();
+            gestionSondes.aff_CMS_Sonde(idRole);
         } catch (SQLException ex) {
             Logger.getLogger(V_Main.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -152,7 +354,7 @@ public class V_Main extends javax.swing.JFrame {
 
     private void mi_consult_batActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mi_consult_batActionPerformed
         try {
-            gestionBatiment.aff_CMS_Batiment();
+            gestionBatiment.aff_CMS_Batiment(idRole);
         } catch (Exception ex) {
             Logger.getLogger(V_Main.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -165,6 +367,66 @@ public class V_Main extends javax.swing.JFrame {
             Logger.getLogger(V_Main.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_mi_ajout_batActionPerformed
+
+    private void mi_logoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mi_logoutActionPerformed
+        unUtil = gestionProjet.deconnection();
+        pn_connexion.setVisible(true);
+        mb_menu.setVisible(true);
+        pf_password.setText("");
+        tf_login.setText("");
+        scanMenus(mb_menu);
+    }//GEN-LAST:event_mi_logoutActionPerformed
+
+    private void btn_loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_loginActionPerformed
+        String login, mdp;
+        login = tf_login.getText();
+        mdp = String.valueOf(pf_password.getPassword());
+        try {
+            unUtil = gestionProjet.verifLogin(mdp, login);
+            if (unUtil != null) {
+                mb_menu.setVisible(true);
+                mi_logout.setVisible(true);
+                mn_compte.setVisible(true);
+                mi_info.setVisible(true);
+                mi_parametre.setVisible(true);
+                pn_connexion.setVisible(false);
+                //System.out.println(unUtil.getId_role());
+                idRole = unUtil.getId_role();
+                listeAutorisation = gestionProjet.getAutorisation(idRole);
+                for (Integer uneCle : listeAutorisation.keySet()) {
+                    uneAutorisation = listeAutorisation.get(uneCle);
+                    unObjet = menuMap.get(uneAutorisation.getCode());
+                    classe = unObjet.getClass().toString();
+                    switch (classe) {
+                        case "class javax.swing.JMenu" -> {
+                            mn = (JMenu) unObjet;
+                            mn.setVisible(true);
+                        }
+                        case "class javax.swing.JMenuItem" -> {
+                            mi = (JMenuItem) unObjet;
+                            mi.setVisible(true);
+
+                        }
+                    }
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Aucun compte trouvé pour le login ou le mot de passe saisie", "Erreur de connexion", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(V_Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btn_loginActionPerformed
+
+    private void btn_hideActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_hideActionPerformed
+        if (passwordVisible) {
+            pf_password.setEchoChar('•');
+            btn_hide.setIcon(eyeClosed);
+        } else {
+            pf_password.setEchoChar((char) 0);
+            btn_hide.setIcon(eyeOpen);
+        }
+        passwordVisible = !passwordVisible;
+    }//GEN-LAST:event_btn_hideActionPerformed
 
     /**
      * @param args the command line arguments
@@ -202,14 +464,32 @@ public class V_Main extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btn_hide;
+    private javax.swing.JButton btn_login;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JMenuBar mb_menu;
     private javax.swing.JMenuItem mi_ajout_bat;
+    private javax.swing.JMenuItem mi_ajout_salle;
     private javax.swing.JMenuItem mi_ajout_sonde;
     private javax.swing.JMenuItem mi_consult_bat;
+    private javax.swing.JMenuItem mi_consult_salle;
     private javax.swing.JMenuItem mi_consult_sonde;
+    private javax.swing.JMenuItem mi_info;
+    private javax.swing.JMenuItem mi_logout;
+    private javax.swing.JMenuItem mi_parametre;
     private javax.swing.JMenuItem mi_quitter;
+    private javax.swing.JMenuItem mi_role;
+    private javax.swing.JMenuItem mi_util;
+    private javax.swing.JMenu mn_admin;
     private javax.swing.JMenu mn_batiment;
+    private javax.swing.JMenu mn_compte;
     private javax.swing.JMenu mn_fichier;
+    private javax.swing.JMenu mn_salle;
     private javax.swing.JMenu mn_sonde;
+    private javax.swing.JPasswordField pf_password;
+    private javax.swing.JPanel pn_connexion;
+    private javax.swing.JTextField tf_login;
     // End of variables declaration//GEN-END:variables
 }

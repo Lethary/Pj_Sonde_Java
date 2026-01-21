@@ -1,5 +1,6 @@
 package pj_sonde.Model;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
@@ -24,9 +25,9 @@ public class M_User {
     // CONSTRUCTEUR COMPLET
     // ----------------------------------------------------------
     public M_User(Db_mariadb db, int id, String name, String email, String password,
-                  String remember_token, String commentaire, Integer id_role,
-                  LocalDateTime email_verified_at,
-                  LocalDateTime created_at, LocalDateTime updated_at) {
+            String remember_token, String commentaire, Integer id_role,
+            LocalDateTime email_verified_at,
+            LocalDateTime created_at, LocalDateTime updated_at) {
 
         this.db = db;
         this.id = id;
@@ -45,12 +46,12 @@ public class M_User {
     // CONSTRUCTEUR INSERT
     // ----------------------------------------------------------
     public M_User(Db_mariadb db,
-                  String name,
-                  String email,
-                  String password,
-                  String remember_token,
-                  String commentaire,
-                  Integer id_role) throws SQLException {
+            String name,
+            String email,
+            String password,
+            String remember_token,
+            String commentaire,
+            Integer id_role) throws SQLException {
 
         this.db = db;
         this.name = name;
@@ -175,6 +176,26 @@ public class M_User {
         return getRecords(db, "1=1");
     }
 
+    public static M_User connexion_log(Db_mariadb db, String mp, String login) throws Exception {
+        String sql;
+        M_User unUtil = null;
+        sql = "SELECT * FROM mcd_users WHERE name = '" + login + "';";
+        ResultSet res;
+        res = db.sqlSelect(sql);
+        if (res.next()) {
+            String mpHash = res.getString("password");
+
+            if (BCrypt.verifyer().verify(mp.toCharArray(), mpHash).verified) {
+                int id = res.getInt("id");
+                unUtil = new M_User(db, id);
+            }
+        }
+
+        res.close();
+
+        return unUtil;
+    }
+
     @Override
     public String toString() {
         return "User{id=" + id
@@ -226,7 +247,76 @@ public class M_User {
 //    }
 //
 //    // -------- GETTERS / SETTERS --------
+    public int getId() {
+        return id;
+    }
 
-    public int getId() { return id; }
-    public void setName(String name) { this.name = name; }
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getRemember_token() {
+        return remember_token;
+    }
+
+    public void setRemember_token(String remember_token) {
+        this.remember_token = remember_token;
+    }
+
+    public String getCommentaire() {
+        return commentaire;
+    }
+
+    public void setCommentaire(String commentaire) {
+        this.commentaire = commentaire;
+    }
+
+    public Integer getId_role() {
+        return id_role;
+    }
+
+    public void setId_role(Integer id_role) {
+        this.id_role = id_role;
+    }
+
+    public LocalDateTime getEmail_verified_at() {
+        return email_verified_at;
+    }
+
+    public void setEmail_verified_at(LocalDateTime email_verified_at) {
+        this.email_verified_at = email_verified_at;
+    }
+
+    public LocalDateTime getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(LocalDateTime created_at) {
+        this.created_at = created_at;
+    }
+
+    public LocalDateTime getUpdated_at() {
+        return updated_at;
+    }
+
+    public void setUpdated_at(LocalDateTime updated_at) {
+        this.updated_at = updated_at;
+    }
+    
 }

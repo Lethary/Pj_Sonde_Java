@@ -6,10 +6,9 @@ package pj_sonde;
 
 import pj_sonde.Controler.C_Sonde;
 import java.util.LinkedHashMap;
-import pj_sonde.Db_mariadb;
 import pj_sonde.Model.*;
-import pj_sonde.View.*;
 import pj_sonde.Controler.C_Batiment;
+import static pj_sonde.Model.M_Autoriser.*;
 
 /**
  *
@@ -20,14 +19,19 @@ public class C_Main {
     /**
      * @param args the command line arguments
      */
-    private final V_Main frm_Main;
-    private M_Sonde uneSonde;
     private Db_mariadb baseSonde;
+    
+    private final V_Main frm_Main;
+    
+    private final C_Sonde gestionSonde;
+    private final C_Batiment gestionbBatiment;
+    
+    private M_User UtilConnecte;
+      
     private LinkedHashMap<Integer, M_Sonde> lesSondes;
     private LinkedHashMap<Integer, M_Type> lesTypes;
     private LinkedHashMap<String, M_Unite> lesUnites;
-    private C_Sonde gestionSonde;
-    private C_Batiment gestionbBatiment;
+    
 
     public C_Main() throws Exception {
         connection();
@@ -40,13 +44,30 @@ public class C_Main {
 
     private void connection() throws Exception {
         baseSonde = new Db_mariadb(Cl_Connection.host, Cl_Connection.user, Cl_Connection.password);
-
     }
 
     public void close() {
         if (baseSonde != null) {
             baseSonde.close();
         }
+    }
+
+    public LinkedHashMap<Integer, M_Autorisation> getAutorisation(int idRole) throws Exception {
+        return getLesAutorisations(baseSonde, idRole);
+    }
+
+    public M_User verifLogin(String mdp, String login) throws Exception {
+        M_User Util = null;
+        UtilConnecte = M_User.connexion_log(baseSonde, mdp, login);
+        if (UtilConnecte != null) {
+            Util = UtilConnecte;
+        }
+        return Util;
+    }
+
+    public M_User deconnection() {
+        UtilConnecte = null;
+        return UtilConnecte;
     }
 
     public static void main(String[] args) throws Exception {

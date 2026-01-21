@@ -21,22 +21,28 @@ public class C_Sonde {
     /**
      * @param args the command line arguments
      */
-    private final V_CMS_Sonde frm_CMS_Sonde;
-    private M_Sonde uneSonde;
     private final Db_mariadb baseSonde;
+    
+    private final V_CMS_Sonde frm_CMS_Sonde;
+
+    private M_Sonde uneSonde;
+
+    private int idRole;
+    
     private LinkedHashMap<Integer, M_Sonde> lesSondes;
     private LinkedHashMap<Integer, M_Type> lesTypes;
     private LinkedHashMap<String, M_Unite> lesUnites;
-    
+
     public C_Sonde(V_Main frm_Main, Db_mariadb baseSonde) {
         this.baseSonde = baseSonde;
         this.frm_CMS_Sonde = new V_CMS_Sonde(frm_Main, true);
     }
 
-    public void aff_CMS_Sonde() throws SQLException {
+    public void aff_CMS_Sonde(int idRole) throws SQLException {
+        this.idRole = idRole;
         lesSondes = M_Sonde.getRecords(baseSonde);
         lesTypes = M_Type.getRecords(baseSonde);
         lesUnites = M_Unite.getRecords(baseSonde);
-        frm_CMS_Sonde.aff_CMS_Sonde(this, uneSonde, baseSonde, lesSondes, lesTypes, lesUnites);
+        frm_CMS_Sonde.aff_CMS_Sonde(this, uneSonde, baseSonde, lesSondes, lesTypes, lesUnites, idRole);
     }
 }

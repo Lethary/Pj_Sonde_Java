@@ -30,6 +30,7 @@ public class V_CMS_Sonde extends javax.swing.JDialog {
     LinkedHashMap<String, M_Unite> lesUnites;
 
     Db_mariadb baseType;
+    int idRole;
     DefaultTableModel dm_tb_sonde;
     DateTimeFormatter formatterLocalDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     DateTimeFormatter formatterLocalDateTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -40,7 +41,9 @@ public class V_CMS_Sonde extends javax.swing.JDialog {
             Db_mariadb baseType,
             LinkedHashMap<Integer, M_Sonde> lesSondes,
             LinkedHashMap<Integer, M_Type> lesTypes,
-            LinkedHashMap<String, M_Unite> lesUnites) {
+            LinkedHashMap<String, M_Unite> lesUnites,
+            int idRole) {
+        this.idRole = idRole;
         this.gestionSonde = gestionSonde;
         this.lesTypes = lesTypes;
         this.uneSonde = uneSonde;
@@ -52,7 +55,12 @@ public class V_CMS_Sonde extends javax.swing.JDialog {
         this.setLocationRelativeTo(null);
         pn_CMS_Sonde.setVisible(false);
         aff_Tableau();
-
+        btn_modif.setVisible(true);
+        btn_supp.setVisible(true);
+        if (idRole == 3) {
+            btn_modif.setVisible(false);
+            btn_supp.setVisible(false);
+        }
         setVisible(true);
     }
 
@@ -164,6 +172,7 @@ public class V_CMS_Sonde extends javax.swing.JDialog {
         ta_commentaire = new javax.swing.JTextArea();
         btn_details = new javax.swing.JButton();
         btn_supp = new javax.swing.JButton();
+        btn_modif = new javax.swing.JButton();
         mb_menu = new javax.swing.JMenuBar();
         mn_fichier = new javax.swing.JMenu();
         mi_fermer = new javax.swing.JMenuItem();
@@ -357,6 +366,14 @@ public class V_CMS_Sonde extends javax.swing.JDialog {
             }
         });
 
+        btn_modif.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        btn_modif.setText("Modifier");
+        btn_modif.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_modifActionPerformed(evt);
+            }
+        });
+
         mn_fichier.setText("Fichier");
 
         mi_fermer.setText("Fermer");
@@ -380,6 +397,7 @@ public class V_CMS_Sonde extends javax.swing.JDialog {
                 .addGap(89, 89, 89)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btn_details)
+                    .addComponent(btn_modif)
                     .addComponent(btn_supp))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
@@ -394,7 +412,9 @@ public class V_CMS_Sonde extends javax.swing.JDialog {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(250, 250, 250)
                         .addComponent(btn_details)
-                        .addGap(29, 29, 29)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btn_modif)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btn_supp)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
@@ -417,6 +437,10 @@ public class V_CMS_Sonde extends javax.swing.JDialog {
     private void btn_suppActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_suppActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_suppActionPerformed
+
+    private void btn_modifActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_modifActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_modifActionPerformed
 
     /**
      * @param args the command line arguments
@@ -462,6 +486,7 @@ public class V_CMS_Sonde extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_details;
+    private javax.swing.JButton btn_modif;
     private javax.swing.JButton btn_supp;
     private javax.swing.JFormattedTextField ftf_code;
     private javax.swing.JFormattedTextField ftf_created_at;

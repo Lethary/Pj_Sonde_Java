@@ -26,7 +26,7 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
     M_Batiment unBatiment;
     LinkedHashMap<Integer, M_Batiment> lesBatiments;
 
-    int idBatiment;
+    int idBatiment, idRole;
     boolean modeEdition;
 
     Db_mariadb baseType;
@@ -43,7 +43,8 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
             C_Batiment gestionBatiment,
             M_Batiment unBatiment,
             Db_mariadb baseType,
-            LinkedHashMap<Integer, M_Batiment> lesBatiments) {
+            LinkedHashMap<Integer, M_Batiment> lesBatiments,
+            int idRole) {
         this.gestionBatiment = gestionBatiment;
         this.unBatiment = unBatiment;
         this.baseType = baseType;
@@ -56,7 +57,12 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
         btn_save.setVisible(false);
 
         aff_Tableau();
-
+        btn_modif.setVisible(true);
+        btn_supp.setVisible(true);
+        if (idRole == 3) {
+            btn_modif.setVisible(false);
+            btn_supp.setVisible(false);
+        }
         setVisible(true);
     }
 

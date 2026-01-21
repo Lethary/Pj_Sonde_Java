@@ -4,7 +4,6 @@
  */
 package pj_sonde.Controler;
 
-import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import pj_sonde.Db_mariadb;
 import pj_sonde.Model.M_Batiment;
@@ -18,12 +17,15 @@ import pj_sonde.View.V_A_Batiment;
  */
 public class C_Batiment {
 
-    private V_CMS_Batiment frm_CMS_Batiment;
-    private V_A_Batiment frm_A_Batiment;
+    private final Db_mariadb baseBatiment;
+    
+    private final V_CMS_Batiment frm_CMS_Batiment;
+    private final V_A_Batiment frm_A_Batiment;
     
     private M_Batiment unBatiment;
-    private final Db_mariadb baseBatiment;
+    
     Integer uneCle;
+    int idRole;
 
     private LinkedHashMap<Integer, M_Batiment> lesBatiments;
 
@@ -33,9 +35,10 @@ public class C_Batiment {
         this.frm_A_Batiment = new V_A_Batiment(frm_Main, true);
     }
 
-    public void aff_CMS_Batiment() throws Exception {
+    public void aff_CMS_Batiment(int idRole) throws Exception {
+        this.idRole = idRole;
         lesBatiments = M_Batiment.getRecords(baseBatiment);
-        frm_CMS_Batiment.aff_CMS_Batiment(this,unBatiment,baseBatiment,lesBatiments);
+        frm_CMS_Batiment.aff_CMS_Batiment(this,unBatiment,baseBatiment,lesBatiments,idRole);
     }
 
     public void aff_A_Batiment() throws Exception {
@@ -51,20 +54,19 @@ public class C_Batiment {
     public void supp_Batiment(int idBatiment)throws Exception{
         unBatiment = new M_Batiment(baseBatiment, idBatiment);
         unBatiment.delete();
-        aff_CMS_Batiment();
-        
+        aff_CMS_Batiment(idRole);  
     }
+    
     public void modif_batiment(int idBatiment, String code, String libelle, String commentaire)throws Exception{
         unBatiment = new M_Batiment(baseBatiment, idBatiment);
         unBatiment.setCode(code);
         unBatiment.setLibelle(libelle);
         unBatiment.setCommentaire(commentaire);
         unBatiment.update();
-        aff_CMS_Batiment();
+        aff_CMS_Batiment(idBatiment);
     }
 
     public boolean batimentExiste(String code, String libelle) throws Exception {
         return M_Batiment.existe(baseBatiment, code, libelle);
     }
-
 }
