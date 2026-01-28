@@ -1,4 +1,17 @@
-/Pj_Sonde/nbproject/private/
-/Pj_Sonde/build/
-/src/ressources/config/application.properties
-/Pj_Sonde/dist/
+/nbproject/private/
+/build/
+/dist/
+
+# Config sensible
+/src/resources/config/application.properties
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# NetBeans
+nbproject/*.properties
+nbproject/*.xml
