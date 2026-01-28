@@ -26,4 +26,6 @@ public class Cl_Connection {
             throw new RuntimeException("Impossible de charger application.properties", e);
         }
     }
+
+
 }
