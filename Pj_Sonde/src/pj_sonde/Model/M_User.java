@@ -14,19 +14,15 @@ public class M_User {
     private String name;
     private String email;
     private String password;
-    private String remember_token;
     private String commentaire;
     private Integer id_role;
-    private LocalDateTime email_verified_at;
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
 
     // ----------------------------------------------------------
     // CONSTRUCTEUR COMPLET
     // ----------------------------------------------------------
-    public M_User(Db_mariadb db, int id, String name, String email, String password,
-            String remember_token, String commentaire, Integer id_role,
-            LocalDateTime email_verified_at,
+    public M_User(Db_mariadb db, int id, String name, String email, String password, String commentaire, Integer id_role,
             LocalDateTime created_at, LocalDateTime updated_at) {
 
         this.db = db;
@@ -34,10 +30,8 @@ public class M_User {
         this.name = name;
         this.email = email;
         this.password = password;
-        this.remember_token = remember_token;
         this.commentaire = commentaire;
         this.id_role = id_role;
-        this.email_verified_at = email_verified_at;
         this.created_at = created_at;
         this.updated_at = updated_at;
     }
@@ -57,7 +51,6 @@ public class M_User {
         this.name = name;
         this.email = email;
         this.password = password;
-        this.remember_token = remember_token;
         this.commentaire = commentaire;
         this.id_role = id_role;
 
@@ -99,12 +92,8 @@ public class M_User {
         this.name = res.getString("name");
         this.email = res.getString("email");
         this.password = res.getString("password");
-        this.remember_token = res.getString("remember_token");
         this.commentaire = res.getString("commentaire");
         this.id_role = res.getInt("id_role");
-
-        Timestamp e = res.getTimestamp("email_verified_at");
-        this.email_verified_at = (e != null ? e.toLocalDateTime() : null);
 
         Timestamp c = res.getTimestamp("created_at");
         this.created_at = (c != null ? c.toLocalDateTime() : null);
@@ -121,7 +110,6 @@ public class M_User {
                 + "name='" + name + "', "
                 + "email='" + email + "', "
                 + "password='" + password + "', "
-                + "remember_token=" + (remember_token != null ? "'" + remember_token + "'" : "NULL") + ", "
                 + "commentaire=" + (commentaire != null ? "'" + commentaire + "'" : "NULL") + ", "
                 + "id_role=" + id_role + ", "
                 + "updated_at=CURRENT_TIMESTAMP() "
@@ -158,10 +146,8 @@ public class M_User {
                     res.getString("name"),
                     res.getString("email"),
                     res.getString("password"),
-                    res.getString("remember_token"),
                     res.getString("commentaire"),
                     res.getInt("id_role"),
-                    (e != null ? e.toLocalDateTime() : null),
                     (c != null ? c.toLocalDateTime() : null),
                     (u != null ? u.toLocalDateTime() : null)
             );
@@ -271,14 +257,6 @@ public class M_User {
         this.password = password;
     }
 
-    public String getRemember_token() {
-        return remember_token;
-    }
-
-    public void setRemember_token(String remember_token) {
-        this.remember_token = remember_token;
-    }
-
     public String getCommentaire() {
         return commentaire;
     }
@@ -293,14 +271,6 @@ public class M_User {
 
     public void setId_role(Integer id_role) {
         this.id_role = id_role;
-    }
-
-    public LocalDateTime getEmail_verified_at() {
-        return email_verified_at;
-    }
-
-    public void setEmail_verified_at(LocalDateTime email_verified_at) {
-        this.email_verified_at = email_verified_at;
     }
 
     public LocalDateTime getCreated_at() {
@@ -318,5 +288,5 @@ public class M_User {
     public void setUpdated_at(LocalDateTime updated_at) {
         this.updated_at = updated_at;
     }
-    
+
 }

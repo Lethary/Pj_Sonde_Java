@@ -22,17 +22,17 @@ import pj_sonde.Controler.C_Batiment;
  */
 public class V_CMS_Batiment extends javax.swing.JDialog {
 
-    C_Batiment gestionBatiment;
-    M_Batiment unBatiment;
-    LinkedHashMap<Integer, M_Batiment> lesBatiments;
+    private C_Batiment gestionBatiment;
+    private M_Batiment unBatiment;
+    private LinkedHashMap<Integer, M_Batiment> lesBatiments;
 
-    int idBatiment, idRole;
-    boolean modeEdition;
+    private int idBatiment;
+    private boolean modeEdition;
 
-    Db_mariadb baseType;
-    DefaultTableModel dm_tb_batiment;
-    DateTimeFormatter formatterLocalDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    DateTimeFormatter formatterLocalDateTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private DefaultTableModel dm_tb_batiment;
+    private DateTimeFormatter formatterLocalDateTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+    private boolean selectionListenerInitialized = false;
 
     public V_CMS_Batiment(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -42,27 +42,28 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
     public void aff_CMS_Batiment(
             C_Batiment gestionBatiment,
             M_Batiment unBatiment,
-            Db_mariadb baseType,
             LinkedHashMap<Integer, M_Batiment> lesBatiments,
             int idRole) {
+
         this.gestionBatiment = gestionBatiment;
         this.unBatiment = unBatiment;
-        this.baseType = baseType;
         this.lesBatiments = lesBatiments;
-        this.setTitle("Consultation & Modification & Suppression des bâtiments");
-        this.setSize(1080, 720);
-        this.setLocationRelativeTo(null);
-        pn_CMS_Sonde.setVisible(false);
+
+        setTitle("Consultation, modification et suppression des bâtiments");
+        setSize(1080, 720);
+        setLocationRelativeTo(null);
+
+        // État initial
+        pn_CMS_Batiment.setVisible(false);
         pn_btn.setVisible(false);
         btn_save.setVisible(false);
 
+        btn_modif.setVisible(idRole != 3);
+        btn_supp.setVisible(idRole != 3);
+
+        // Chargement des données
         aff_Tableau();
-        btn_modif.setVisible(true);
-        btn_supp.setVisible(true);
-        if (idRole == 3) {
-            btn_modif.setVisible(false);
-            btn_supp.setVisible(false);
-        }
+
         setVisible(true);
     }
 
@@ -72,10 +73,11 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
         tb_Batiment.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tb_Batiment.setAutoCreateRowSorter(true);
         tb_Batiment.setDefaultEditor(Object.class, null);
+
         dm_tb_batiment = (DefaultTableModel) tb_Batiment.getModel();
         dm_tb_batiment.setRowCount(lesBatiments.size());
 
-        // Remplissage du tableau à partir de la collection de bâtiments
+        // Remplissage du tableau
         for (Integer uneCle : lesBatiments.keySet()) {
             unBatiment = lesBatiments.get(uneCle);
             dm_tb_batiment.setValueAt(unBatiment.getId(), ligne, 0);
@@ -84,38 +86,57 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
             ligne++;
         }
 
-        // Déclenché lorsqu’une ligne du tableau est sélectionnée
-        tb_Batiment.getSelectionModel().addListSelectionListener(e -> {
-            int i = tb_Batiment.getSelectedRow();
-            if (i != -1) {
-                int id = (Integer) tb_Batiment.getValueAt(i, 0);
-                M_Batiment batimentSelected = lesBatiments.get(id);
-                pn_btn.setVisible(true);
-                ftf_id.setText(String.valueOf(batimentSelected.getId()));
-                ftf_code.setText(batimentSelected.getCode());
-                ftf_nom.setText(batimentSelected.getLibelle());
-                idBatiment = batimentSelected.getId();
-                if (batimentSelected.getCommentaire() != null) {
-                    pn_commentaire.setVisible(true);
-                    ta_commentaire.setText(batimentSelected.getCommentaire());
-                } else {
-                    pn_commentaire.setVisible(false);
+        // Listener ajouté UNE SEULE FOIS
+        if (!selectionListenerInitialized) {
+            tb_Batiment.getSelectionModel().addListSelectionListener(e -> {
+                int i = tb_Batiment.getSelectedRow();
+                if (i != -1) {
+
+                    int id = (Integer) tb_Batiment.getValueAt(i, 0);
+                    M_Batiment batimentSelected = lesBatiments.get(id);
+
+                    pn_btn.setVisible(true);
+                    idBatiment = batimentSelected.getId();
+
+                    ftf_id.setText(String.valueOf(idBatiment));
+                    ftf_code.setText(batimentSelected.getCode());
+                    ftf_nom.setText(batimentSelected.getLibelle());
+
+                    if (batimentSelected.getCommentaire() != null) {
+                        pn_commentaire.setVisible(true);
+                        ta_commentaire.setText(batimentSelected.getCommentaire());
+                    } else {
+                        pn_commentaire.setVisible(false);
+                        ta_commentaire.setText("");
+                    }
+
+                    if (batimentSelected.getCreated_at() != null) {
+                        ftf_created_at.setText(
+                                batimentSelected.getCreated_at().format(formatterLocalDateTime)
+                        );
+                    } else {
+                        ftf_created_at.setText("");
+                    }
+
+                    if (batimentSelected.getUpdated_at() != null) {
+                        ftf_updated_at.setText(
+                                batimentSelected.getUpdated_at().format(formatterLocalDateTime)
+                        );
+                    } else {
+                        ftf_updated_at.setText("");
+                    }
                 }
-                if (batimentSelected.getCreated_at() != null) {
-                    ftf_created_at.setText(batimentSelected.getCreated_at().format(formatterLocalDateTime));
-                }
-                if (batimentSelected.getUpdated_at() != null) {
-                    ftf_updated_at.setText(batimentSelected.getUpdated_at().format(formatterLocalDateTime));
-                }
-            }
-        });
+            });
+
+            selectionListenerInitialized = true;
+        }
     }
 
     private void exit() {
         pn_table.setVisible(true);
         pn_btn.setVisible(false);
         tb_Batiment.clearSelection();
-        pn_CMS_Sonde.setVisible(false);
+        pn_CMS_Batiment.setVisible(false);
     }
 
     /**
@@ -127,7 +148,7 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        pn_CMS_Sonde = new javax.swing.JPanel();
+        pn_CMS_Batiment = new javax.swing.JPanel();
         lb_titre = new javax.swing.JLabel();
         lb_id = new javax.swing.JLabel();
         lb_code = new javax.swing.JLabel();
@@ -216,76 +237,76 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
             }
         });
 
-        javax.swing.GroupLayout pn_CMS_SondeLayout = new javax.swing.GroupLayout(pn_CMS_Sonde);
-        pn_CMS_Sonde.setLayout(pn_CMS_SondeLayout);
-        pn_CMS_SondeLayout.setHorizontalGroup(
-            pn_CMS_SondeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pn_CMS_SondeLayout.createSequentialGroup()
+        javax.swing.GroupLayout pn_CMS_BatimentLayout = new javax.swing.GroupLayout(pn_CMS_Batiment);
+        pn_CMS_Batiment.setLayout(pn_CMS_BatimentLayout);
+        pn_CMS_BatimentLayout.setHorizontalGroup(
+            pn_CMS_BatimentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pn_CMS_BatimentLayout.createSequentialGroup()
                 .addContainerGap(381, Short.MAX_VALUE)
                 .addComponent(lb_titre)
                 .addGap(381, 381, 381))
-            .addGroup(pn_CMS_SondeLayout.createSequentialGroup()
-                .addGroup(pn_CMS_SondeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pn_CMS_SondeLayout.createSequentialGroup()
+            .addGroup(pn_CMS_BatimentLayout.createSequentialGroup()
+                .addGroup(pn_CMS_BatimentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pn_CMS_BatimentLayout.createSequentialGroup()
                         .addGap(197, 197, 197)
-                        .addGroup(pn_CMS_SondeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(pn_CMS_SondeLayout.createSequentialGroup()
+                        .addGroup(pn_CMS_BatimentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(pn_CMS_BatimentLayout.createSequentialGroup()
                                 .addGap(65, 65, 65)
-                                .addGroup(pn_CMS_SondeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(pn_CMS_BatimentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(lb_id)
                                     .addComponent(lb_code)
                                     .addComponent(lb_nom))
                                 .addGap(26, 26, 26)
-                                .addGroup(pn_CMS_SondeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(pn_CMS_BatimentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(ftf_id, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)
                                     .addComponent(ftf_code)
                                     .addComponent(ftf_nom)))
                             .addComponent(pn_commentaire, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(pn_CMS_SondeLayout.createSequentialGroup()
+                            .addGroup(pn_CMS_BatimentLayout.createSequentialGroup()
                                 .addGap(6, 6, 6)
-                                .addGroup(pn_CMS_SondeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(pn_CMS_BatimentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(lb_created_at)
                                     .addComponent(lb_update_at))
                                 .addGap(26, 26, 26)
-                                .addGroup(pn_CMS_SondeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(pn_CMS_BatimentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(ftf_updated_at, javax.swing.GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE)
                                     .addComponent(ftf_created_at)))))
-                    .addGroup(pn_CMS_SondeLayout.createSequentialGroup()
+                    .addGroup(pn_CMS_BatimentLayout.createSequentialGroup()
                         .addGap(259, 259, 259)
                         .addComponent(btn_save, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btn_exit, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        pn_CMS_SondeLayout.setVerticalGroup(
-            pn_CMS_SondeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pn_CMS_SondeLayout.createSequentialGroup()
+        pn_CMS_BatimentLayout.setVerticalGroup(
+            pn_CMS_BatimentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pn_CMS_BatimentLayout.createSequentialGroup()
                 .addGap(75, 75, 75)
                 .addComponent(lb_titre)
                 .addGap(82, 82, 82)
-                .addGroup(pn_CMS_SondeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(pn_CMS_BatimentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lb_id)
                     .addComponent(ftf_id, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pn_CMS_SondeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(pn_CMS_BatimentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lb_code)
                     .addComponent(ftf_code, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pn_CMS_SondeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(pn_CMS_BatimentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lb_nom)
                     .addComponent(ftf_nom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(pn_commentaire, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pn_CMS_SondeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(pn_CMS_BatimentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lb_created_at)
                     .addComponent(ftf_created_at, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pn_CMS_SondeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(pn_CMS_BatimentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lb_update_at)
                     .addComponent(ftf_updated_at, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(44, 44, 44)
-                .addGroup(pn_CMS_SondeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(pn_CMS_BatimentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_save, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btn_exit, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(208, Short.MAX_VALUE))
@@ -401,14 +422,14 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
                         .addComponent(pn_table, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(pn_CMS_Sonde, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(pn_CMS_Batiment, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(57, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(pn_CMS_Sonde, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pn_CMS_Batiment, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(pn_table, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(812, Short.MAX_VALUE))
@@ -418,6 +439,8 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void mi_fermerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mi_fermerActionPerformed
+        pn_table.setVisible(true);
+        pn_CMS_Batiment.setVisible(false);
         setVisible(false);
     }//GEN-LAST:event_mi_fermerActionPerformed
 
@@ -429,7 +452,7 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
         ftf_nom.setEditable(false);
         ftf_updated_at.setEditable(false);
         ta_commentaire.setEditable(false);
-        pn_CMS_Sonde.setVisible(true);
+        pn_CMS_Batiment.setVisible(true);
     }//GEN-LAST:event_btn_detailsActionPerformed
 
     private void btn_modifActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_modifActionPerformed
@@ -452,7 +475,7 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
 
             btn_save.setVisible(true);
             btn_exit.setText("Annuler");
-            pn_CMS_Sonde.setVisible(true);
+            pn_CMS_Batiment.setVisible(true);
         }
     }//GEN-LAST:event_btn_modifActionPerformed
 
@@ -616,7 +639,7 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
     private javax.swing.JMenuBar mb_menu;
     private javax.swing.JMenuItem mi_fermer;
     private javax.swing.JMenu mn_fichier;
-    private javax.swing.JPanel pn_CMS_Sonde;
+    private javax.swing.JPanel pn_CMS_Batiment;
     private javax.swing.JPanel pn_btn;
     private javax.swing.JPanel pn_commentaire;
     private javax.swing.JPanel pn_table;

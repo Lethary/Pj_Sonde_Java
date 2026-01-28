@@ -21,6 +21,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import pj_sonde.Controler.C_Sonde;
 import pj_sonde.Controler.C_Batiment;
+import pj_sonde.Controler.C_Salle;
 
 /**
  *
@@ -33,8 +34,10 @@ public class V_Main extends javax.swing.JFrame {
     private C_Main gestionProjet;
     private C_Sonde gestionSondes;
     private C_Batiment gestionBatiment;
+    private C_Salle gestionSalle;
 
     private LinkedHashMap<Integer, M_Autorisation> listeAutorisation;
+    private LinkedHashMap<Integer, M_Batiment> lesBatiments;
     private final Map<String, Object> menuMap = new HashMap<>();
 
     private M_Autorisation uneAutorisation;
@@ -81,9 +84,10 @@ public class V_Main extends javax.swing.JFrame {
         btn_hide.setPreferredSize(new Dimension(24, 24));
     }
 
-    public void afficher(C_Sonde gestionSondes, C_Batiment gestionBatiment) {
+    public void afficher(C_Sonde gestionSondes, C_Batiment gestionBatiment, C_Salle gestionSalle) {
         this.gestionBatiment = gestionBatiment;
         this.gestionSondes = gestionSondes;
+        this.gestionSalle = gestionSalle;
         this.setTitle("Gestion des sondes & bâtiments ");
         this.setSize(450, 500);
         this.setLocationRelativeTo(null);
@@ -297,10 +301,20 @@ public class V_Main extends javax.swing.JFrame {
 
         mi_consult_salle.setText("Consultation salles");
         mi_consult_salle.setName("mi_consult_salle"); // NOI18N
+        mi_consult_salle.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mi_consult_salleActionPerformed(evt);
+            }
+        });
         mn_salle.add(mi_consult_salle);
 
         mi_ajout_salle.setText("Ajout salles");
         mi_ajout_salle.setName("mi_ajout_salle"); // NOI18N
+        mi_ajout_salle.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mi_ajout_salleActionPerformed(evt);
+            }
+        });
         mn_salle.add(mi_ajout_salle);
 
         mb_menu.add(mn_salle);
@@ -427,6 +441,22 @@ public class V_Main extends javax.swing.JFrame {
         }
         passwordVisible = !passwordVisible;
     }//GEN-LAST:event_btn_hideActionPerformed
+
+    private void mi_ajout_salleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mi_ajout_salleActionPerformed
+        try {
+            gestionSalle.aff_A_Salle();
+        } catch (Exception ex) {
+            Logger.getLogger(V_Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_mi_ajout_salleActionPerformed
+
+    private void mi_consult_salleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mi_consult_salleActionPerformed
+        try {
+            gestionSalle.aff_CMS_Salle(idRole);
+        } catch (Exception ex) {
+            Logger.getLogger(V_Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_mi_consult_salleActionPerformed
 
     /**
      * @param args the command line arguments

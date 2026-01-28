@@ -19,8 +19,8 @@ public class M_Salle {
 
     // Constructeur complet
     public M_Salle(Db_mariadb db, int id, String code, String libelle,
-                   String commentaire, int id_batiment,
-                   LocalDateTime created_at, LocalDateTime updated_at) {
+            String commentaire, int id_batiment,
+            LocalDateTime created_at, LocalDateTime updated_at) {
         this.db = db;
         this.id = id;
         this.code = code;
@@ -33,7 +33,7 @@ public class M_Salle {
 
     // Constructeur INSERT
     public M_Salle(Db_mariadb db, String code, String libelle,
-                   String commentaire, int id_batiment) throws SQLException {
+            String commentaire, int id_batiment) throws SQLException {
         this.db = db;
         this.code = code;
         this.libelle = libelle;
@@ -100,7 +100,7 @@ public class M_Salle {
     // GET RECORDS
     public static LinkedHashMap<Integer, M_Salle> getRecords(Db_mariadb db, String where) throws SQLException {
         LinkedHashMap<Integer, M_Salle> map = new LinkedHashMap<>();
-        ResultSet res = db.sqlSelect("SELECT * FROM mcd_salles WHERE " + where + " ORDER BY libelle;");
+        ResultSet res = db.sqlSelect("SELECT * FROM mcd_salles WHERE " + where + " ORDER BY id;");
 
         while (res.next()) {
             int id = res.getInt("id");
@@ -128,6 +128,16 @@ public class M_Salle {
         return getRecords(db, "1=1");
     }
 
+    public static boolean existe(Db_mariadb db, String code, String libelle) throws Exception {
+        LinkedHashMap<Integer, M_Salle> result = getRecords(db, "code = '" + code + "' OR libelle ='" + libelle + "'");
+        return !result.isEmpty();
+    }
+
+    public static boolean existeModification(Db_mariadb db, int idSalle, String code, String libelle) throws Exception {
+        LinkedHashMap<Integer, M_Salle> result = getRecords(db, "id != " + idSalle + " AND (code = '" + code + "' OR libelle = '" + libelle + "')");
+        return !result.isEmpty();
+    }
+
     @Override
     public String toString() {
         return "Salle{id=" + id
@@ -139,7 +149,9 @@ public class M_Salle {
                 + ", updated_at=" + updated_at + "}\n";
     }
 
-    public int getId() { return id; }
+    public int getId() {
+        return id;
+    }
 
     // TESTS
 //    public static void main(String[] args) throws Exception {
@@ -174,4 +186,51 @@ public class M_Salle {
 //
 //        base.close();
 //    }
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getLibelle() {
+        return libelle;
+    }
+
+    public void setLibelle(String libelle) {
+        this.libelle = libelle;
+    }
+
+    public String getCommentaire() {
+        return commentaire;
+    }
+
+    public void setCommentaire(String commentaire) {
+        this.commentaire = commentaire;
+    }
+
+    public int getId_batiment() {
+        return id_batiment;
+    }
+
+    public void setId_batiment(int id_batiment) {
+        this.id_batiment = id_batiment;
+    }
+
+    public LocalDateTime getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(LocalDateTime created_at) {
+        this.created_at = created_at;
+    }
+
+    public LocalDateTime getUpdated_at() {
+        return updated_at;
+    }
+
+    public void setUpdated_at(LocalDateTime updated_at) {
+        this.updated_at = updated_at;
+    }
 }

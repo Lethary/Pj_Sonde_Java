@@ -38,7 +38,7 @@ public class C_Batiment {
     public void aff_CMS_Batiment(int idRole) throws Exception {
         this.idRole = idRole;
         lesBatiments = M_Batiment.getRecords(baseBatiment);
-        frm_CMS_Batiment.aff_CMS_Batiment(this,unBatiment,baseBatiment,lesBatiments,idRole);
+        frm_CMS_Batiment.aff_CMS_Batiment(this,unBatiment,lesBatiments,idRole);
     }
 
     public void aff_A_Batiment() throws Exception {

@@ -8,6 +8,7 @@ import pj_sonde.Controler.C_Sonde;
 import java.util.LinkedHashMap;
 import pj_sonde.Model.*;
 import pj_sonde.Controler.C_Batiment;
+import pj_sonde.Controler.C_Salle;
 import static pj_sonde.Model.M_Autoriser.*;
 
 /**
@@ -25,12 +26,14 @@ public class C_Main {
     
     private final C_Sonde gestionSonde;
     private final C_Batiment gestionbBatiment;
+    private final C_Salle gestionSalle;
     
     private M_User UtilConnecte;
       
     private LinkedHashMap<Integer, M_Sonde> lesSondes;
     private LinkedHashMap<Integer, M_Type> lesTypes;
     private LinkedHashMap<String, M_Unite> lesUnites;
+    private LinkedHashMap<Integer, M_Batiment> lesBatiments;
     
 
     public C_Main() throws Exception {
@@ -38,7 +41,9 @@ public class C_Main {
         frm_Main = new V_Main(this);
         gestionSonde = new C_Sonde(frm_Main, baseSonde);
         gestionbBatiment = new C_Batiment(frm_Main, baseSonde);
-        frm_Main.afficher(gestionSonde, gestionbBatiment);
+        gestionSalle = new C_Salle(frm_Main, baseSonde);
+
+        frm_Main.afficher(gestionSonde, gestionbBatiment, gestionSalle);
 
     }
 

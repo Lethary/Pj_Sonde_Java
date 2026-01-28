@@ -53,7 +53,7 @@
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="pn_CMS_Sonde" min="-2" max="-2" attributes="0"/>
+                      <Component id="pn_CMS_Batiment" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace pref="57" max="32767" attributes="0"/>
@@ -64,7 +64,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="pn_CMS_Sonde" min="-2" max="-2" attributes="0"/>
+              <Component id="pn_CMS_Batiment" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="pn_table" min="-2" max="-2" attributes="0"/>
               <EmptySpace pref="812" max="32767" attributes="0"/>
@@ -73,7 +73,7 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Container class="javax.swing.JPanel" name="pn_CMS_Sonde">
+    <Container class="javax.swing.JPanel" name="pn_CMS_Batiment">
 
       <Layout>
         <DimensionLayout dim="0">

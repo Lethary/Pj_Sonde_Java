@@ -4,34 +4,52 @@
  */
 package pj_sonde.View;
 
+import java.util.LinkedHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-import pj_sonde.Controler.C_Batiment;
+import pj_sonde.Controler.C_Salle;
+import pj_sonde.Model.M_Batiment;
+import pj_sonde.Model.M_Salle;
 
 /**
  *
  * @author kevin
  */
-public class V_A_Batiment extends javax.swing.JDialog {
+public class V_A_Salle extends javax.swing.JDialog {
 
-    /**
-     * Creates new form V_A_Batiment
-     */
-    private C_Batiment gestionBatiment;
+    C_Salle gestionSalle;
 
-    public V_A_Batiment(java.awt.Frame parent, boolean modal) {
+    M_Batiment unBatiment;
+    LinkedHashMap<Integer, M_Batiment> lesBatiments;
+    public V_A_Salle(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
     }
 
-    public void aff_A_Batiment(C_Batiment gestionBatiment) {
-        this.gestionBatiment = gestionBatiment;
-        this.setTitle("Ajout d'un bâtiments");
+    public void aff_A_Salle(C_Salle gestionSalle, LinkedHashMap<Integer, M_Salle> lesSalles, LinkedHashMap<Integer, M_Batiment> lesBatiments) {
+        this.gestionSalle = gestionSalle;
+        this.lesBatiments = lesBatiments;
+        this.setTitle("Ajout d'une salle");
         this.setSize(1080, 720);
         this.setLocationRelativeTo(null);
+        
+        for (Integer uneCle : lesBatiments.keySet()) {
+            unBatiment = lesBatiments.get(uneCle);
+            cb_bat_lie.addItem(unBatiment.getCode());
+        }
         setVisible(true);
+    }
+
+    private int getIdByCode(String codeBatiment) {
+        int res = -1;
+        for (M_Batiment batiment : lesBatiments.values()) {
+            if (batiment.getCode().equals(codeBatiment)) {
+                res = batiment.getId();
+            }
+        }
+        return res;
     }
 
     /**
@@ -43,34 +61,36 @@ public class V_A_Batiment extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        lb_titre = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
         lb_code = new javax.swing.JLabel();
         lb_libelle = new javax.swing.JLabel();
         lb_commentaire = new javax.swing.JLabel();
-        sp_commentaire = new javax.swing.JScrollPane();
+        jScrollPane1 = new javax.swing.JScrollPane();
         ta_commentaire = new javax.swing.JTextArea();
         ftf_code = new javax.swing.JFormattedTextField();
         ftf_libelle = new javax.swing.JFormattedTextField();
         btn_cancel = new javax.swing.JButton();
         btn_add = new javax.swing.JButton();
+        cb_bat_lie = new javax.swing.JComboBox<>();
+        lb_bat_lie = new javax.swing.JLabel();
         mb_menu = new javax.swing.JMenuBar();
         mn_fichier = new javax.swing.JMenu();
         mi_fermer = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        lb_titre.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
-        lb_titre.setText("Ajout d'un bâtiment");
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
+        jLabel1.setText("Ajout d'une salle");
 
-        lb_code.setText("Code du bâtiment  : ");
+        lb_code.setText("Code de la salle :");
 
-        lb_libelle.setText("Libelle du bâtiment :");
+        lb_libelle.setText("Libelle de la salle :");
 
         lb_commentaire.setText("Commentaire : ");
 
         ta_commentaire.setColumns(20);
         ta_commentaire.setRows(5);
-        sp_commentaire.setViewportView(ta_commentaire);
+        jScrollPane1.setViewportView(ta_commentaire);
 
         btn_cancel.setText("Annuler");
         btn_cancel.addActionListener(new java.awt.event.ActionListener() {
@@ -85,6 +105,8 @@ public class V_A_Batiment extends javax.swing.JDialog {
                 btn_addActionPerformed(evt);
             }
         });
+
+        lb_bat_lie.setText("Batiment lié :");
 
         mn_fichier.setText("Fichier");
 
@@ -108,35 +130,35 @@ public class V_A_Batiment extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(328, 328, 328)
-                        .addComponent(lb_titre))
+                        .addComponent(jLabel1))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(209, 209, 209)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(lb_code)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(ftf_code, javax.swing.GroupLayout.PREFERRED_SIZE, 427, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(lb_libelle)
-                                    .addComponent(lb_commentaire))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(sp_commentaire)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(ftf_libelle, javax.swing.GroupLayout.PREFERRED_SIZE, 427, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(0, 0, Short.MAX_VALUE))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(btn_add, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(btn_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(329, Short.MAX_VALUE))
+                                .addComponent(btn_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(lb_libelle)
+                                    .addComponent(lb_commentaire)
+                                    .addComponent(lb_code)
+                                    .addComponent(lb_bat_lie))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(ftf_code)
+                                    .addComponent(jScrollPane1)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(ftf_libelle, javax.swing.GroupLayout.PREFERRED_SIZE, 427, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(0, 0, Short.MAX_VALUE))
+                                    .addComponent(cb_bat_lie, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
+                .addContainerGap(343, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(25, 25, 25)
-                .addComponent(lb_titre)
+                .addComponent(jLabel1)
                 .addGap(120, 120, 120)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lb_code)
@@ -145,38 +167,42 @@ public class V_A_Batiment extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lb_libelle)
                     .addComponent(ftf_libelle, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(10, 10, 10)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cb_bat_lie, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lb_bat_lie))
+                .addGap(47, 47, 47)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lb_commentaire)
-                    .addComponent(sp_commentaire, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btn_add, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(281, Short.MAX_VALUE))
+                .addContainerGap(204, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void mi_fermerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mi_fermerActionPerformed
+        cb_bat_lie.removeAllItems();
         setVisible(false);
     }//GEN-LAST:event_mi_fermerActionPerformed
 
     private void btn_addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_addActionPerformed
         String code, libelle, commentaire;
+        int idBatiment;
 
-        // Vérification des champs obligatoires
         JTextField[] champs = {ftf_code, ftf_libelle};
 
         for (JTextField champ : champs) {
-            if (champ.getText().isEmpty()) {
+            if (champ.getText().isEmpty() || champ.getText().isBlank()) {
                 JOptionPane.showMessageDialog(this, "Veuillez remplir tous les champs", "Erreur", JOptionPane.ERROR_MESSAGE);
                 return;
             }
         }
 
-        // Vérification des longueurs
         if (ftf_libelle.getText().length() > 50) {
             JOptionPane.showMessageDialog(this, "Le libellé doit contenir moins de 50 caractères", "Erreur", JOptionPane.ERROR_MESSAGE);
             return;
@@ -194,38 +220,35 @@ public class V_A_Batiment extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "Le commentaire doit contenir moins de 250 caractères", "Erreur", JOptionPane.ERROR_MESSAGE);
             return;
         }
+        idBatiment = getIdByCode((String) cb_bat_lie.getSelectedItem());
+        System.out.println(idBatiment);
         commentaire = ta_commentaire.getText().isEmpty() ? null : ta_commentaire.getText(); //Soit on recupère le commentaire soit on met à null
-
-        // Vérification si le bâtiments existe 
         try {
-            if (gestionBatiment.batimentExiste(code, libelle)) {
+            if (gestionSalle.salleExiste(code, libelle)){
                 JOptionPane.showMessageDialog(this, "Le code ou le libelle est déjà utilisé", "Erreur", JOptionPane.ERROR_MESSAGE);
                 return;
             }
         } catch (Exception ex) {
             Logger.getLogger(V_A_Batiment.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        // Enregistrement en DB
         try {
-            gestionBatiment.add_Batiment(code, libelle, commentaire);
-            JOptionPane.showMessageDialog(this, "Le bâtiment " + code + " a bien été ajouté", "Confirmation", JOptionPane.INFORMATION_MESSAGE);
+            gestionSalle.add_Salle(code, libelle, commentaire, idBatiment);
+            JOptionPane.showMessageDialog(this, "La salle  " + code + " a bien été ajouté", "Confirmation", JOptionPane.INFORMATION_MESSAGE);
             ftf_code.setText("");
             ftf_libelle.setText("");
             ta_commentaire.setText("");
-            setVisible(false);
         } catch (Exception ex) {
-            Logger.getLogger(V_A_Batiment.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(V_A_Salle.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }//GEN-LAST:event_btn_addActionPerformed
 
     private void btn_cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cancelActionPerformed
-        int result = JOptionPane.showConfirmDialog(this, "Êtes vous sûr de vouloir d'annuler votre saisie ?", "Confirmation annulation", JOptionPane.YES_NO_OPTION);
+       int result = JOptionPane.showConfirmDialog(this, "Êtes vous sûr de vouloir d'annuler votre saisie ?", "Confirmation annulation", JOptionPane.YES_NO_OPTION);
         if (result == JOptionPane.YES_OPTION) {
             ftf_code.setText("");
             ftf_libelle.setText("");
             ta_commentaire.setText("");
+            cb_bat_lie.removeAllItems();
             setVisible(false);
         }
     }//GEN-LAST:event_btn_cancelActionPerformed
@@ -247,20 +270,20 @@ public class V_A_Batiment extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(V_A_Batiment.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(V_A_Salle.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(V_A_Batiment.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(V_A_Salle.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(V_A_Batiment.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(V_A_Salle.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(V_A_Batiment.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(V_A_Salle.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                V_A_Batiment dialog = new V_A_Batiment(new javax.swing.JFrame(), true);
+                V_A_Salle dialog = new V_A_Salle(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -275,16 +298,18 @@ public class V_A_Batiment extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_add;
     private javax.swing.JButton btn_cancel;
+    private javax.swing.JComboBox<String> cb_bat_lie;
     private javax.swing.JFormattedTextField ftf_code;
     private javax.swing.JFormattedTextField ftf_libelle;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lb_bat_lie;
     private javax.swing.JLabel lb_code;
     private javax.swing.JLabel lb_commentaire;
     private javax.swing.JLabel lb_libelle;
-    private javax.swing.JLabel lb_titre;
     private javax.swing.JMenuBar mb_menu;
     private javax.swing.JMenuItem mi_fermer;
     private javax.swing.JMenu mn_fichier;
-    private javax.swing.JScrollPane sp_commentaire;
     private javax.swing.JTextArea ta_commentaire;
     // End of variables declaration//GEN-END:variables
 }

@@ -45,43 +45,42 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="328" max="-2" attributes="0"/>
-                      <Component id="lb_titre" min="-2" max="-2" attributes="0"/>
+                      <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="209" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="lb_code" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="ftf_code" min="-2" pref="427" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="lb_libelle" min="-2" max="-2" attributes="0"/>
-                                  <Component id="lb_commentaire" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="sp_commentaire" max="32767" attributes="0"/>
-                                  <Group type="102" attributes="0">
-                                      <Component id="ftf_libelle" min="-2" pref="427" max="-2" attributes="0"/>
-                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                                  </Group>
-                              </Group>
-                          </Group>
+                      <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="1" attributes="0">
                               <Component id="btn_add" min="-2" pref="206" max="-2" attributes="0"/>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Component id="btn_cancel" min="-2" pref="206" max="-2" attributes="0"/>
                           </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Group type="103" groupAlignment="1" attributes="0">
+                                  <Component id="lb_libelle" alignment="1" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lb_commentaire" alignment="1" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lb_code" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lb_bat_lie" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="ftf_code" max="32767" attributes="0"/>
+                                  <Component id="jScrollPane1" alignment="0" max="32767" attributes="0"/>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="ftf_libelle" min="-2" pref="427" max="-2" attributes="0"/>
+                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                  </Group>
+                                  <Component id="cb_bat_lie" alignment="0" max="32767" attributes="0"/>
+                              </Group>
+                          </Group>
                       </Group>
                   </Group>
               </Group>
-              <EmptySpace pref="329" max="32767" attributes="0"/>
+              <EmptySpace pref="343" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -89,7 +88,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
-              <Component id="lb_titre" min="-2" max="-2" attributes="0"/>
+              <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="120" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="lb_code" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -100,38 +99,43 @@
                   <Component id="lb_libelle" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="ftf_libelle" alignment="3" min="-2" pref="22" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="cb_bat_lie" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="lb_bat_lie" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace min="-2" pref="47" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="lb_commentaire" min="-2" max="-2" attributes="0"/>
-                  <Component id="sp_commentaire" min="-2" max="-2" attributes="0"/>
+                  <Component id="lb_commentaire" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="jScrollPane1" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="btn_cancel" alignment="3" min="-2" pref="39" max="-2" attributes="0"/>
                   <Component id="btn_add" alignment="3" min="-2" pref="39" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="281" max="32767" attributes="0"/>
+              <EmptySpace pref="204" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JLabel" name="lb_titre">
+    <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Segoe UI" size="48" style="0"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Ajout d&apos;un b&#xe2;timent"/>
+        <Property name="text" type="java.lang.String" value="Ajout d&apos;une salle"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="lb_code">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Code du b&#xe2;timent  : "/>
+        <Property name="text" type="java.lang.String" value="Code de la salle :"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="lb_libelle">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Libelle du b&#xe2;timent :"/>
+        <Property name="text" type="java.lang.String" value="Libelle de la salle :"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="lb_commentaire">
@@ -139,7 +143,7 @@
         <Property name="text" type="java.lang.String" value="Commentaire : "/>
       </Properties>
     </Component>
-    <Container class="javax.swing.JScrollPane" name="sp_commentaire">
+    <Container class="javax.swing.JScrollPane" name="jScrollPane1">
       <AuxValues>
         <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
       </AuxValues>
@@ -173,6 +177,21 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_addActionPerformed"/>
       </Events>
+    </Component>
+    <Component class="javax.swing.JComboBox" name="cb_bat_lie">
+      <Properties>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+          <StringArray count="0"/>
+        </Property>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lb_bat_lie">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Batiment li&#xe9; :"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>
