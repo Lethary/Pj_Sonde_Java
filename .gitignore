@@ -3,7 +3,7 @@
 /dist/
 
 # Config sensible
-/src/resources/config/application.properties
+/src/ressources/config/application.properties
 
 # Logs
 *.log
