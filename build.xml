@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Pj_Sonde" default="default" basedir=".">
+
+    <description>Builds, tests, and runs the project Pj_Sonde.</description>
+
+    <import file="nbproject/build-impl.xml"/>
+
+    <!-- ===================== -->
+    <!-- FAT JAR CONFIGURATION -->
+    <!-- ===================== -->
+
+    <target name="fat-jar" depends="jar">
+
+        <property name="fatjar.name" value="Pj_Sonde-fat.jar"/>
+
+        <jar destfile="${dist.dir}/${fatjar.name}" duplicate="fail">
+
+            <!-- Classes + resources compilées -->
+            <fileset dir="${build.classes.dir}"/>
+
+            <!-- Dépendances : ON SUPPRIME TOUT META-INF -->
+            <zipgroupfileset dir="${dist.dir}/lib" includes="**/*.jar">
+                <exclude name="META-INF/**"/>
+            </zipgroupfileset>
+
+            <!-- Manifest propre -->
+            <manifest>
+                <attribute name="Main-Class" value="pj_sonde.C_Main"/>
+            </manifest>
+
+        </jar>
+
+    </target>
+
+</project>

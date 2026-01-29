@@ -1,0 +1,21 @@
+# Build
+/build/
+/dist/
+/out/
+
+# NetBeans
+/nbproject/
+/nbproject/private/
+/nbproject/*.xml
+/nbproject/*.properties
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Config sensible
+/src/ressources/config/application.properties
+/out/*
