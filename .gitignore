@@ -3,12 +3,6 @@
 /dist/
 /out/
 
-# NetBeans
-/nbproject/
-/nbproject/private/
-/nbproject/*.xml
-/nbproject/*.properties
-
 # Logs
 *.log
 
