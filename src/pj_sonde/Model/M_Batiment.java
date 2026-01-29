@@ -125,6 +125,11 @@ public class M_Batiment {
         LinkedHashMap<Integer, M_Batiment> result = getRecords(db, "code = '" + code + "' OR libelle ='" + libelle +"'");
         return !result.isEmpty();
     }
+    
+    public static boolean existeModification(Db_mariadb db,int idBatiment, String code, String libelle) throws SQLException {
+        LinkedHashMap<Integer, M_Batiment> result = getRecords(db,"id != " + idBatiment + " AND code = '" + code + "' OR libelle ='" + libelle +"'");
+        return !result.isEmpty();
+    }
 
     @Override
     public String toString() {

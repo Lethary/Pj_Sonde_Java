@@ -468,6 +468,7 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
             ftf_id.setEditable(false);
             ftf_code.setEditable(true);
             ftf_nom.setEditable(true);
+            pn_commentaire.setVisible(true);
             ta_commentaire.setEditable(true);
 
             ftf_created_at.setVisible(false);
@@ -543,10 +544,10 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
                 return;
             }
         }
-        if (ta_commentaire.getText() == null || ta_commentaire.getText().isBlank()) {
+        if (ta_commentaire.getText() == null) {
             JOptionPane.showMessageDialog(
                     this,
-                    "Veuillez remplir tous les champs",
+                    "Veuillez remplir tous les cshamps",
                     "Erreur",
                     JOptionPane.ERROR_MESSAGE
             );
@@ -566,12 +567,21 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
         }
         // Appel de la modification
         try {
+            if (gestionBatiment.batimentExisteModification(idBatiment, vCode, vLibelle)) {
+                JOptionPane.showMessageDialog(this, "Le code ou le libelle est déjà utilisé", "Erreur", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(V_CMS_Batiment.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
             gestionBatiment.modif_batiment(vId, vCode, vLibelle, vCommentaire);
             btn_exit.setText("Fermer");
             modeEdition = false;
         } catch (Exception ex) {
             Logger.getLogger(V_CMS_Batiment.class.getName()).log(Level.SEVERE, null, ex);
         }
+
 
     }//GEN-LAST:event_btn_saveActionPerformed
 

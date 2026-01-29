@@ -35,13 +35,13 @@ public class M_Autorisation {
     public static LinkedHashMap<Integer, M_Autorisation> getRecords(Db_mariadb db) throws Exception {
         LinkedHashMap<Integer, M_Autorisation> liste = new LinkedHashMap<>();
         String sql = """
-            SELECT idAutorisation, code, description
+            SELECT id, code, description
             FROM mcd_autorisations
             ORDER BY code
         """;
         try (ResultSet res = db.sqlSelect(sql)) {
             while (res.next()) {
-                int id = res.getInt("idAutorisation");
+                int id = res.getInt("id");
                 String code = res.getString("code");
                 String description = res.getString("description");
 

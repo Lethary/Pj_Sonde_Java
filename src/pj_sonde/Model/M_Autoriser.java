@@ -32,18 +32,18 @@ public class M_Autoriser {
         LinkedHashMap<Integer, M_Autorisation> liste = new LinkedHashMap<>();
 
         String sql = """
-            SELECT a.idAutorisation, a.code
+            SELECT a.id, a.code
             FROM mcd_autorisations a
             INNER JOIN mcd_autoriser ar
-                ON a.idAutorisation = ar.idAutorisation
-            WHERE ar.idRole = """ + idRole + """
-            ORDER BY a.idAutorisation
+                ON a.id = ar.id_autorisation
+            WHERE ar.id_roles = """ + idRole + """
+            ORDER BY a.id
         """;
 
         ResultSet res = db.sqlSelect(sql);
 
         while (res.next()) {
-            int id = res.getInt("idAutorisation");
+            int id = res.getInt("id");
             String code = res.getString("code");
 
             liste.put(id, new M_Autorisation(db, id, code, null));
@@ -55,7 +55,7 @@ public class M_Autoriser {
     public static LinkedHashMap<Integer, M_Autoriser> getRecords(Db_mariadb db) throws Exception {
         LinkedHashMap<Integer, M_Autoriser> liste = new LinkedHashMap<>();
 
-        String sql = "SELECT idAutorisation, idRole FROM mcd_autoriser";
+        String sql = "SELECT id_autorisation, id_roles FROM mcd_autoriser";
         ResultSet res = db.sqlSelect(sql);
 
         int cle = 0;
@@ -64,8 +64,8 @@ public class M_Autoriser {
             liste.put(cle,
                     new M_Autoriser(
                             db,
-                            res.getInt("idAutorisation"),
-                            res.getInt("idRole")
+                            res.getInt("id_autorisation"),
+                            res.getInt("id_roles")
                     )
             );
         }

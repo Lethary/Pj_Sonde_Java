@@ -3,10 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/kevin/Documents/NetBeansProjects/Pj_Sonde_Java/src/pj_sonde/Model/M_Salle.java</file>
-            <file>file:/C:/Users/kevin/Documents/NetBeansProjects/Pj_Sonde_Java/src/pj_sonde/Controler/C_Salle.java</file>
-            <file>file:/C:/Users/kevin/Documents/NetBeansProjects/Pj_Sonde_Java/src/pj_sonde/View/V_A_Salle.java</file>
-            <file>file:/C:/Users/kevin/Documents/NetBeansProjects/Pj_Sonde_Java/src/pj_sonde/Controler/C_Sonde.java</file>
+            <file>file:/C:/Users/kevin/Desktop/Pj_Sonde_Java/src/pj_sonde/View/V_CMS_Batiment.java</file>
+            <file>file:/C:/Users/kevin/Desktop/Pj_Sonde_Java/src/pj_sonde/C_Main.java</file>
+            <file>file:/C:/Users/kevin/Desktop/Pj_Sonde_Java/src/pj_sonde/Controler/C_Batiment.java</file>
         </group>
     </open-files>
 </project-private>

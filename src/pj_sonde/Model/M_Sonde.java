@@ -14,7 +14,7 @@ public class M_Sonde {
 
     private Db_mariadb db;
     private int id;
-    private int id_type; // correspond à la colonne id_types dans la BDD
+    private int id_type; // correspond à la colonne id_type dans la BDD
     private String code;
     private String nom;
     private String adresse_ip;
@@ -58,7 +58,7 @@ public class M_Sonde {
     // -------------------------------------------------------------------
     // CONSTRUCTEUR D'INSERTION (ordre EXACT de la BDD)
     // colonnes : code, nom, adresse_ip, adresse_mac, date_achat,
-    //            commentaire, created_at, updated_at, id_types, code_unite
+    //            commentaire, created_at, updated_at, id_type, code_unite
     // -------------------------------------------------------------------
     public M_Sonde(Db_mariadb db,
                    String code,
@@ -82,7 +82,7 @@ public class M_Sonde {
 
         String sql = "INSERT INTO mcd_sondes "
                 + "(code, nom, adresse_ip, adresse_mac, date_achat, commentaire, "
-                + "created_at, updated_at, id_types, code_unite) "
+                + "created_at, updated_at, id_type, code_unite) "
                 + "VALUES ('" + code + "', "
                 + "'" + nom + "', "
                 + (adresse_ip != null ? "'" + adresse_ip + "'" : "NULL") + ", "
@@ -132,7 +132,7 @@ public class M_Sonde {
         Timestamp u = res.getTimestamp("updated_at");
         this.updated_at = (u != null) ? u.toLocalDateTime() : null;
 
-        this.id_type = res.getInt("id_types");
+        this.id_type = res.getInt("id_type");
         this.code_unite = res.getString("code_unite");
         res.close();
     }
@@ -236,7 +236,7 @@ public class M_Sonde {
                 + "date_achat = " + (date_achat != null ? "'" + Date.valueOf(date_achat) + "'" : "NULL") + ", "
                 + "commentaire = " + (commentaire != null ? "'" + commentaire + "'" : "NULL") + ", "
                 + "updated_at = '" + LocalDateTime.now() + "', "
-                + "id_types = " + id_type + ", "
+                + "id_type = " + id_type + ", "
                 + "code_unite = '" + code_unite + "' "
                 + "WHERE id = " + id + ";";
 
@@ -279,7 +279,7 @@ public class M_Sonde {
             M_Sonde s = new M_Sonde(
                     db,
                     id,
-                    res.getInt("id_types"),
+                    res.getInt("id_type"),
                     res.getString("code"),
                     res.getString("nom"),
                     res.getString("adresse_ip"),
@@ -339,7 +339,7 @@ public class M_Sonde {
 //                null,                    // commentaire
 //                LocalDateTime.now(),     // created_at
 //                LocalDateTime.now(),     // updated_at
-//                1,                       // id_type (colonne id_types, doit exister dans mcd_types)
+//                1,                       // id_type (colonne id_type, doit exister dans mcd_types)
 //                "T"                      // code_unite (doit exister dans mcd_unites)
 //        );
 //        System.out.println(s1);
@@ -357,8 +357,8 @@ public class M_Sonde {
 //        M_Sonde s3 = new M_Sonde(maBase, s2.getId());
 //        System.out.println(s3);
 //
-//        System.out.println("=== TEST GETRECORDS WHERE id_types = 1 ===");
-//        LinkedHashMap<Integer, M_Sonde> map1 = M_Sonde.getRecords(maBase, "id_types = 1");
+//        System.out.println("=== TEST GETRECORDS WHERE id_type = 1 ===");
+//        LinkedHashMap<Integer, M_Sonde> map1 = M_Sonde.getRecords(maBase, "id_type = 1");
 //        for (M_Sonde s : map1.values()) {
 //            System.out.println(s);
 //        }

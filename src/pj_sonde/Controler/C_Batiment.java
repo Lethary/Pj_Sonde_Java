@@ -63,10 +63,14 @@ public class C_Batiment {
         unBatiment.setLibelle(libelle);
         unBatiment.setCommentaire(commentaire);
         unBatiment.update();
-        aff_CMS_Batiment(idBatiment);
+        aff_CMS_Batiment(idRole);
     }
 
     public boolean batimentExiste(String code, String libelle) throws Exception {
         return M_Batiment.existe(baseBatiment, code, libelle);
+    }
+    
+    public boolean batimentExisteModification(int idBatiment, String code, String libelle) throws Exception{
+        return M_Batiment.existeModification(baseBatiment, idBatiment, code, libelle);
     }
 }
