@@ -7,6 +7,7 @@ package pj_sonde.View;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -122,13 +123,18 @@ public class V_A_Sonde extends javax.swing.JDialog {
         mi_fermer = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         lb_titre.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
         lb_titre.setText("Ajout d'une sonde");
 
         lb_code.setText("Code de la sonde :");
 
-        lb_nom.setText("Nom de la salle :");
+        lb_nom.setText("Nom de la sonde:");
 
         lb_commentaire.setText("Commentaire : ");
 
@@ -137,6 +143,11 @@ public class V_A_Sonde extends javax.swing.JDialog {
         sp_commentaire.setViewportView(ta_commentaire);
 
         btn_cancel.setText("Annuler");
+        btn_cancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_cancelActionPerformed(evt);
+            }
+        });
 
         btn_add.setText("Ajouter");
         btn_add.addActionListener(new java.awt.event.ActionListener() {
@@ -176,20 +187,21 @@ public class V_A_Sonde extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(218, 218, 218)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(lb_nom)
-                                    .addComponent(lb_commentaire)
-                                    .addComponent(lb_code)
-                                    .addComponent(lb_ip)
-                                    .addComponent(lb_mac))
-                                .addGap(21, 21, 21))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addContainerGap()
+                        .addGap(213, 213, 213)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(lb_nom)
+                            .addComponent(lb_code)
+                            .addComponent(lb_ip)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(lb_date_achat)
-                                .addGap(18, 18, 18)))
+                                .addComponent(lb_mac))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(lb_type)
+                                    .addComponent(lb_libelle3)
+                                    .addComponent(lb_commentaire))
+                                .addGap(5, 5, 5)))
+                        .addGap(21, 21, 21)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(sp_commentaire, javax.swing.GroupLayout.PREFERRED_SIZE, 430, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
@@ -208,12 +220,6 @@ public class V_A_Sonde extends javax.swing.JDialog {
                         .addGap(328, 328, 328)
                         .addComponent(lb_titre)))
                 .addGap(0, 220, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(207, 207, 207)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(lb_libelle3)
-                    .addComponent(lb_type))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -263,7 +269,18 @@ public class V_A_Sonde extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void mi_fermerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mi_fermerActionPerformed
-        setVisible(false);
+        int result = JOptionPane.showConfirmDialog(this, "Êtes vous sûr de vouloir d'annuler votre saisie ?", "Confirmation annulation", JOptionPane.YES_NO_OPTION);
+        JTextField[] champs = new JTextField[]{ftf_code, ftf_ip, ftf_mac, ftf_nom};
+        if (result == JOptionPane.YES_OPTION) {
+            for (JTextField champ : champs) {
+                champ.setText("");
+            }
+            ta_commentaire.setText("");
+            dc_achat.setDate(null);
+            cb_type.removeAllItems();
+            cb_unite.removeAllItems();
+            setVisible(false);
+        }
     }//GEN-LAST:event_mi_fermerActionPerformed
 
     private void btn_addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_addActionPerformed
@@ -271,20 +288,19 @@ public class V_A_Sonde extends javax.swing.JDialog {
         int idType;
         String rexIp = "^(?:(?:25[0-5]|2[0-4]\\d|1?\\d{1,2})(?:\\.(?!$)|$)){4}$";
         String rexMac = "^(?:[0-9A-Fa-f]{2}([:-]))(?:[0-9A-Fa-f]{2}\\1){4}[0-9A-Fa-f]{2}$";
-        JTextField[] champs = {ftf_code, ftf_ip, ftf_mac, ftf_nom};
-
+        JTextField[] champs = new JTextField[]{ftf_code, ftf_ip, ftf_mac, ftf_nom};
         for (JTextField champ : champs) {
             if (champ.getText().isEmpty() || champ.getText().isBlank()) {
                 JOptionPane.showMessageDialog(this, "Veuillez remplir tous les champs", "Erreur", JOptionPane.ERROR_MESSAGE);
                 return;
             }
         }
-        if (ftf_code.getText().length() > 50) {
-            JOptionPane.showMessageDialog(this, "Le code doit contenir moins de 50 caractères", "Erreur", JOptionPane.ERROR_MESSAGE);
+        if (ftf_code.getText().length() > 10) {
+            JOptionPane.showMessageDialog(this, "Le code doit contenir moins de 10 caractères", "Erreur", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        if (ftf_nom.getText().length() > 150) {
-            JOptionPane.showMessageDialog(this, "Le nom doit contenir moins de 50 caractères", "Erreur", JOptionPane.ERROR_MESSAGE);
+        if (ftf_nom.getText().length() > 100) {
+            JOptionPane.showMessageDialog(this, "Le nom doit contenir moins de 100 caractères", "Erreur", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -301,7 +317,7 @@ public class V_A_Sonde extends javax.swing.JDialog {
             return;
         }
         if (!ftf_mac.getText().matches(rexMac)) {
-            JOptionPane.showMessageDialog(this, "L'adresse mac doit être dans le bon format", "Erreur", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "L'adresse mac doit être au format XX-XX-XX-XX-XX-XX avec des caractère héxadécimal (exemple : FF-FF-FF-FF-FF-FF)", "Erreur", JOptionPane.ERROR_MESSAGE);
             return;
         }
         if (ta_commentaire.getText().length() > 250) {
@@ -326,11 +342,57 @@ public class V_A_Sonde extends javax.swing.JDialog {
 //        System.out.println(codeUnite);
         commentaire = ta_commentaire.getText().isEmpty() ? null : ta_commentaire.getText();
         try {
-            gestionSonde.add_Sonde(code, nom, ip, mac, LocalDate.EPOCH, commentaire, idType, codeUnite);
-        } catch (SQLException ex) {
+            if (gestionSonde.sondeExiste(code, nom, mac)) {
+                JOptionPane.showMessageDialog(this, "Le code, le nom ou l'adresse mac renseigné sont déjà utilisés", "Erreur", JOptionPane.ERROR_MESSAGE);
+            } else {
+                try {
+                    gestionSonde.add_Sonde(code, nom, ip, mac, dateAchat, commentaire, idType, codeUnite);
+                    JOptionPane.showMessageDialog(this, "La sonde  " + code + " a bien été ajouté", "Confirmation", JOptionPane.INFORMATION_MESSAGE);
+                    ftf_code.setText("");
+                    ftf_ip.setText("");
+                    ftf_mac.setText("");
+                    ftf_nom.setText("");
+                    dc_achat.setCalendar(null);
+                    cb_type.setSelectedItem(-1);
+                    cb_unite.setSelectedItem(-1);
+                } catch (SQLException ex) {
+                    Logger.getLogger(V_A_Sonde.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        } catch (Exception ex) {
             Logger.getLogger(V_A_Sonde.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btn_addActionPerformed
+
+    private void btn_cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cancelActionPerformed
+        int result = JOptionPane.showConfirmDialog(this, "Êtes vous sûr de vouloir d'annuler votre saisie ?", "Confirmation annulation", JOptionPane.YES_NO_OPTION);
+        JTextField[] champs = new JTextField[]{ftf_code, ftf_ip, ftf_mac, ftf_nom};
+        if (result == JOptionPane.YES_OPTION) {
+            for (JTextField champ : champs) {
+                champ.setText("");
+            }
+            ta_commentaire.setText("");
+            dc_achat.setDate(null);
+            cb_type.removeAllItems();
+            cb_unite.removeAllItems();
+            setVisible(false);
+        }
+    }//GEN-LAST:event_btn_cancelActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        int result = JOptionPane.showConfirmDialog(this, "Êtes vous sûr de vouloir d'annuler votre saisie ?", "Confirmation annulation", JOptionPane.YES_NO_OPTION);
+        JTextField[] champs = new JTextField[]{ftf_code, ftf_ip, ftf_mac, ftf_nom};
+        if (result == JOptionPane.YES_OPTION) {
+            for (JTextField champ : champs) {
+                champ.setText("");
+            }
+            ta_commentaire.setText("");
+            dc_achat.setDate(null);
+            cb_type.removeAllItems();
+            cb_unite.removeAllItems();
+            setVisible(false);
+        }
+    }//GEN-LAST:event_formWindowClosing
 
     /**
      * @param args the command line arguments

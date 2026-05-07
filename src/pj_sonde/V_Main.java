@@ -22,6 +22,7 @@ import javax.swing.JOptionPane;
 import pj_sonde.Controler.C_Sonde;
 import pj_sonde.Controler.C_Batiment;
 import pj_sonde.Controler.C_Salle;
+import pj_sonde.Controler.C_Utilisateur;
 
 /**
  *
@@ -35,6 +36,7 @@ public class V_Main extends javax.swing.JFrame {
     private C_Sonde gestionSondes;
     private C_Batiment gestionBatiment;
     private C_Salle gestionSalle;
+    private C_Utilisateur gestionUtilisateur;
 
     private LinkedHashMap<Integer, M_Autorisation> listeAutorisation;
     private LinkedHashMap<Integer, M_Batiment> lesBatiments;
@@ -84,10 +86,11 @@ public class V_Main extends javax.swing.JFrame {
         btn_hide.setPreferredSize(new Dimension(24, 24));
     }
 
-    public void afficher(C_Sonde gestionSondes, C_Batiment gestionBatiment, C_Salle gestionSalle) {
+    public void afficher(C_Sonde gestionSondes, C_Batiment gestionBatiment, C_Salle gestionSalle, C_Utilisateur gestionUtilisateur) {
         this.gestionBatiment = gestionBatiment;
         this.gestionSondes = gestionSondes;
         this.gestionSalle = gestionSalle;
+        this.gestionUtilisateur = gestionUtilisateur;
         this.setTitle("Gestion des sondes & bâtiments ");
         this.setSize(450, 500);
         this.setLocationRelativeTo(null);
@@ -130,13 +133,19 @@ public class V_Main extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         pf_password = new javax.swing.JPasswordField();
         btn_hide = new javax.swing.JButton();
+        pn_login = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        btn_batiment = new javax.swing.JButton();
+        btn_salle = new javax.swing.JButton();
+        btn_sonde = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
         mb_menu = new javax.swing.JMenuBar();
         mn_fichier = new javax.swing.JMenu();
         mi_quitter = new javax.swing.JMenuItem();
         mi_logout = new javax.swing.JMenuItem();
         mn_admin = new javax.swing.JMenu();
-        mi_role = new javax.swing.JMenuItem();
-        mi_util = new javax.swing.JMenuItem();
+        mi_ajout_util = new javax.swing.JMenuItem();
+        mi_consult_util = new javax.swing.JMenuItem();
         mn_sonde = new javax.swing.JMenu();
         mi_consult_sonde = new javax.swing.JMenuItem();
         mi_ajout_sonde = new javax.swing.JMenuItem();
@@ -146,9 +155,6 @@ public class V_Main extends javax.swing.JFrame {
         mn_salle = new javax.swing.JMenu();
         mi_consult_salle = new javax.swing.JMenuItem();
         mi_ajout_salle = new javax.swing.JMenuItem();
-        mn_compte = new javax.swing.JMenu();
-        mi_info = new javax.swing.JMenuItem();
-        mi_parametre = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -214,7 +220,95 @@ public class V_Main extends javax.swing.JFrame {
                     .addComponent(btn_hide))
                 .addGap(18, 18, 18)
                 .addComponent(btn_login, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(166, Short.MAX_VALUE))
+                .addContainerGap(189, Short.MAX_VALUE))
+        );
+
+        pn_login.setPreferredSize(new java.awt.Dimension(450, 500));
+
+        jLabel4.setFont(new java.awt.Font("Arial Black", 0, 24)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(102, 0, 0));
+        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel4.setText("Bienvenu sur l'application");
+        jLabel4.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        btn_batiment.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
+        btn_batiment.setText("Consulter les bâtiments");
+        btn_batiment.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btn_batiment.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        btn_batiment.setIconTextGap(1);
+        btn_batiment.setMaximumSize(new java.awt.Dimension(500, 300));
+        btn_batiment.setMinimumSize(new java.awt.Dimension(500, 300));
+        btn_batiment.setPreferredSize(new java.awt.Dimension(500, 300));
+        btn_batiment.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_batimentActionPerformed(evt);
+            }
+        });
+
+        btn_salle.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
+        btn_salle.setText("Consulter les salles");
+        btn_salle.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btn_salle.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        btn_salle.setIconTextGap(1);
+        btn_salle.setMaximumSize(new java.awt.Dimension(500, 300));
+        btn_salle.setMinimumSize(new java.awt.Dimension(500, 300));
+        btn_salle.setPreferredSize(new java.awt.Dimension(500, 300));
+        btn_salle.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_salleActionPerformed(evt);
+            }
+        });
+
+        btn_sonde.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
+        btn_sonde.setText("Consulter les sondes");
+        btn_sonde.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btn_sonde.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        btn_sonde.setIconTextGap(1);
+        btn_sonde.setMaximumSize(new java.awt.Dimension(500, 300));
+        btn_sonde.setMinimumSize(new java.awt.Dimension(500, 300));
+        btn_sonde.setPreferredSize(new java.awt.Dimension(500, 300));
+        btn_sonde.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_sondeActionPerformed(evt);
+            }
+        });
+
+        jLabel5.setFont(new java.awt.Font("Arial Black", 0, 24)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(102, 0, 0));
+        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel5.setText("de gestion de sondes");
+        jLabel5.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        javax.swing.GroupLayout pn_loginLayout = new javax.swing.GroupLayout(pn_login);
+        pn_login.setLayout(pn_loginLayout);
+        pn_loginLayout.setHorizontalGroup(
+            pn_loginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(pn_loginLayout.createSequentialGroup()
+                .addGap(100, 100, 100)
+                .addGroup(pn_loginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btn_batiment, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_salle, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_sonde, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pn_loginLayout.createSequentialGroup()
+                .addContainerGap(22, Short.MAX_VALUE)
+                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 407, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(21, 21, 21))
+        );
+        pn_loginLayout.setVerticalGroup(
+            pn_loginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pn_loginLayout.createSequentialGroup()
+                .addComponent(jLabel4)
+                .addGap(0, 0, 0)
+                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(36, 36, 36)
+                .addComponent(btn_sonde, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btn_salle, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btn_batiment, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(115, Short.MAX_VALUE))
         );
 
         mb_menu.setName("mb_menu"); // NOI18N
@@ -245,13 +339,23 @@ public class V_Main extends javax.swing.JFrame {
         mn_admin.setText("Paramétrages");
         mn_admin.setName("mn_admin"); // NOI18N
 
-        mi_role.setText("Role");
-        mi_role.setName("mi_role"); // NOI18N
-        mn_admin.add(mi_role);
+        mi_ajout_util.setText("Ajout Utilisateur");
+        mi_ajout_util.setName("mi_ajout_util"); // NOI18N
+        mi_ajout_util.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mi_ajout_utilActionPerformed(evt);
+            }
+        });
+        mn_admin.add(mi_ajout_util);
 
-        mi_util.setText("Utilisateur");
-        mi_util.setName("mi_util"); // NOI18N
-        mn_admin.add(mi_util);
+        mi_consult_util.setText("Consulter  les utilisateurs");
+        mi_consult_util.setName("mi_consult_util"); // NOI18N
+        mi_consult_util.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mi_consult_utilActionPerformed(evt);
+            }
+        });
+        mn_admin.add(mi_consult_util);
 
         mb_menu.add(mn_admin);
 
@@ -324,30 +428,25 @@ public class V_Main extends javax.swing.JFrame {
 
         mb_menu.add(mn_salle);
 
-        mn_compte.setText("Compte");
-        mn_compte.setName("mn_compte"); // NOI18N
-
-        mi_info.setText("Mes informations");
-        mi_info.setName("mi_info"); // NOI18N
-        mn_compte.add(mi_info);
-
-        mi_parametre.setText("Paramètre");
-        mi_parametre.setName("mi_parametre"); // NOI18N
-        mn_compte.add(mi_parametre);
-
-        mb_menu.add(mn_compte);
-
         setJMenuBar(mb_menu);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pn_connexion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pn_connexion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pn_login, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pn_connexion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(pn_connexion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pn_login, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(361, Short.MAX_VALUE))
         );
 
         pack();
@@ -389,6 +488,7 @@ public class V_Main extends javax.swing.JFrame {
 
     private void mi_logoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mi_logoutActionPerformed
         unUtil = gestionProjet.deconnection();
+        pn_login.setVisible(false);
         pn_connexion.setVisible(true);
         mb_menu.setVisible(true);
         pf_password.setText("");
@@ -405,10 +505,8 @@ public class V_Main extends javax.swing.JFrame {
             if (unUtil != null) {
                 mb_menu.setVisible(true);
                 mi_logout.setVisible(true);
-                mn_compte.setVisible(true);
-                mi_info.setVisible(true);
-                mi_parametre.setVisible(true);
                 pn_connexion.setVisible(false);
+                pn_login.setVisible(true);
                 //System.out.println(unUtil.getId_role());
                 idRole = unUtil.getId_role();
                 listeAutorisation = gestionProjet.getAutorisation(idRole);
@@ -471,6 +569,46 @@ public class V_Main extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_mi_ajout_sondeActionPerformed
 
+    private void btn_batimentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_batimentActionPerformed
+        try {
+            gestionBatiment.aff_CMS_Batiment(idRole);
+        } catch (Exception ex) {
+            Logger.getLogger(V_Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btn_batimentActionPerformed
+
+    private void btn_salleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_salleActionPerformed
+        try {
+            gestionSalle.aff_CMS_Salle(idRole);
+        } catch (Exception ex) {
+            Logger.getLogger(V_Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btn_salleActionPerformed
+
+    private void btn_sondeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_sondeActionPerformed
+        try {
+            gestionSondes.aff_CMS_Sonde(idRole);
+        } catch (SQLException ex) {
+            Logger.getLogger(V_Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btn_sondeActionPerformed
+
+    private void mi_ajout_utilActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mi_ajout_utilActionPerformed
+        try {
+            gestionUtilisateur.aff_A_Utilisateur();
+        } catch (Exception ex) {
+            Logger.getLogger(V_Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_mi_ajout_utilActionPerformed
+
+    private void mi_consult_utilActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mi_consult_utilActionPerformed
+        try {
+            gestionUtilisateur.aff_CMS_Utilisateur(idRole);
+        } catch (Exception ex) {
+            Logger.getLogger(V_Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_mi_consult_utilActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -507,32 +645,35 @@ public class V_Main extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btn_batiment;
     private javax.swing.JButton btn_hide;
     private javax.swing.JButton btn_login;
+    private javax.swing.JButton btn_salle;
+    private javax.swing.JButton btn_sonde;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JMenuBar mb_menu;
     private javax.swing.JMenuItem mi_ajout_bat;
     private javax.swing.JMenuItem mi_ajout_salle;
     private javax.swing.JMenuItem mi_ajout_sonde;
+    private javax.swing.JMenuItem mi_ajout_util;
     private javax.swing.JMenuItem mi_consult_bat;
     private javax.swing.JMenuItem mi_consult_salle;
     private javax.swing.JMenuItem mi_consult_sonde;
-    private javax.swing.JMenuItem mi_info;
+    private javax.swing.JMenuItem mi_consult_util;
     private javax.swing.JMenuItem mi_logout;
-    private javax.swing.JMenuItem mi_parametre;
     private javax.swing.JMenuItem mi_quitter;
-    private javax.swing.JMenuItem mi_role;
-    private javax.swing.JMenuItem mi_util;
     private javax.swing.JMenu mn_admin;
     private javax.swing.JMenu mn_batiment;
-    private javax.swing.JMenu mn_compte;
     private javax.swing.JMenu mn_fichier;
     private javax.swing.JMenu mn_salle;
     private javax.swing.JMenu mn_sonde;
     private javax.swing.JPasswordField pf_password;
     private javax.swing.JPanel pn_connexion;
+    private javax.swing.JPanel pn_login;
     private javax.swing.JTextField tf_login;
     // End of variables declaration//GEN-END:variables
 }

@@ -65,6 +65,7 @@ public class V_CMS_Salle extends javax.swing.JDialog {
 
         // État initial de l’UI
         pn_CMS_Salle.setVisible(false);
+        pn_table.setVisible(true);
         pn_btn.setVisible(false);
         btn_save.setVisible(false);
 
@@ -127,9 +128,7 @@ public class V_CMS_Salle extends javax.swing.JDialog {
             dm_tb_salle.setValueAt(salle.getId(), ligne, 0);
             dm_tb_salle.setValueAt(salle.getCode(), ligne, 1);
             dm_tb_salle.setValueAt(salle.getLibelle(), ligne, 2);
-            dm_tb_salle.setValueAt(
-                    getCodeById(salle.getId_batiment()), ligne, 3
-            );
+            dm_tb_salle.setValueAt(getCodeById(salle.getId_batiment()), ligne, 3);
             ligne++;
         }
 
@@ -297,6 +296,12 @@ public class V_CMS_Salle extends javax.swing.JDialog {
 
         lb_bat_lie.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         lb_bat_lie.setText("Appartient au bâtiment : ");
+
+        cb_bat_lie.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cb_bat_lieActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout pn_CMS_SalleLayout = new javax.swing.GroupLayout(pn_CMS_Salle);
         pn_CMS_Salle.setLayout(pn_CMS_SalleLayout);
@@ -606,7 +611,7 @@ public class V_CMS_Salle extends javax.swing.JDialog {
         idBatiment = getIdByCode((String) cb_bat_lie.getSelectedItem());
         commentaire = ta_commentaire.getText().isEmpty() ? null : ta_commentaire.getText();
         try {
-            if (gestionSalles.salleExisteModification(idSalle, code, libelle)) {
+            if (gestionSalles.salleExiste(idSalle, code, libelle)) {
                 JOptionPane.showMessageDialog(this, "Le code ou le libelle est déjà utilisé", "Erreur", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -630,7 +635,7 @@ public class V_CMS_Salle extends javax.swing.JDialog {
         } else {
             int reponse = JOptionPane.showConfirmDialog(
                     this,
-                    "Êtes-vous sûr de vouloir supprimer cette sall ?",
+                    "Êtes-vous sûr de vouloir supprimer cette salle ?",
                     "Confirmation",
                     JOptionPane.YES_NO_OPTION);
             if (reponse == JOptionPane.YES_OPTION) {
@@ -648,6 +653,10 @@ public class V_CMS_Salle extends javax.swing.JDialog {
             }
         }
     }//GEN-LAST:event_btn_suppActionPerformed
+
+    private void cb_bat_lieActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_bat_lieActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cb_bat_lieActionPerformed
 
     /**
      * @param args the command line arguments

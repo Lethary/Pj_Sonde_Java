@@ -5,7 +5,6 @@
 package pj_sonde.Controler;
 
 import java.util.LinkedHashMap;
-import pj_sonde.Cl_Connection;
 import pj_sonde.Db_mariadb;
 import pj_sonde.Model.M_Batiment;
 import pj_sonde.Model.M_Salle;
@@ -76,7 +75,7 @@ public class C_Salle {
         return M_Salle.existe(db, code, libelle);
     }
 
-    public boolean salleExisteModification(int idSalle, String code, String libelle) throws Exception {
+    public boolean salleExiste(int idSalle, String code, String libelle) throws Exception {
         return M_Salle.existeModification(db, idSalle, code, libelle);
     }
 }

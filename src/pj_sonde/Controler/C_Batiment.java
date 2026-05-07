@@ -7,6 +7,7 @@ package pj_sonde.Controler;
 import java.util.LinkedHashMap;
 import pj_sonde.Db_mariadb;
 import pj_sonde.Model.M_Batiment;
+import pj_sonde.Model.M_Salle;
 import pj_sonde.View.V_CMS_Batiment;
 import pj_sonde.V_Main;
 import pj_sonde.View.V_A_Batiment;
@@ -52,6 +53,12 @@ public class C_Batiment {
     }
     
     public void supp_Batiment(int idBatiment)throws Exception{
+        unBatiment = new M_Batiment(baseBatiment, idBatiment);
+        unBatiment.delete();
+        aff_CMS_Batiment(idRole);  
+    }
+    public void supp_Batiment_avec_salle(int idBatiment)throws Exception{
+        M_Salle.deleteBuilding(baseBatiment, idBatiment);
         unBatiment = new M_Batiment(baseBatiment, idBatiment);
         unBatiment.delete();
         aff_CMS_Batiment(idRole);  

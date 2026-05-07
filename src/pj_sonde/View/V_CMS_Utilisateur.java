@@ -4,6 +4,7 @@
  */
 package pj_sonde.View;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.logging.Level;
@@ -12,44 +13,45 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
-import pj_sonde.Db_mariadb;
 import pj_sonde.Model.*;
-import pj_sonde.Controler.C_Batiment;
+import pj_sonde.Controler.C_Utilisateur;
 
 /**
  *
  * @author kevin
  */
-public class V_CMS_Batiment extends javax.swing.JDialog {
+public class V_CMS_Utilisateur extends javax.swing.JDialog {
 
-    private C_Batiment gestionBatiment;
-    private M_Batiment unBatiment;
-    private LinkedHashMap<Integer, M_Batiment> lesBatiments;
-
-    private int idBatiment;
+    private C_Utilisateur gestionUtilisateur;
+    private M_User unUtilisateur;
+    private LinkedHashMap<Integer, M_User> lesUtilisateurs;
+    private LinkedHashMap<Integer, M_Role> lesRoles;
+    private int idUtilisateur;
     private boolean modeEdition;
-
-    private DefaultTableModel dm_tb_batiment;
+    
+    private DefaultTableModel dm_tb_utilisateur;
     private DateTimeFormatter formatterLocalDateTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     private boolean selectionListenerInitialized = false;
 
-    public V_CMS_Batiment(java.awt.Frame parent, boolean modal) {
+    public V_CMS_Utilisateur(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
     }
 
-    public void aff_CMS_Batiment(
-            C_Batiment gestionBatiment,
-            M_Batiment unBatiment,
-            LinkedHashMap<Integer, M_Batiment> lesBatiments,
+    public void aff_CMS_Utilisateur(
+            C_Utilisateur gestionUtilisateur,
+            M_User unUtilisateur,
+            LinkedHashMap<Integer, M_User> lesUtilisateurs,
+            LinkedHashMap<Integer, M_Role> lesRoles,
             int idRole) {
 
-        this.gestionBatiment = gestionBatiment;
-        this.unBatiment = unBatiment;
-        this.lesBatiments = lesBatiments;
+        this.gestionUtilisateur = gestionUtilisateur;
+        this.unUtilisateur = unUtilisateur;
+        this.lesUtilisateurs = lesUtilisateurs;
+        this.lesRoles = lesRoles;
 
-        setTitle("Consultation, modification et suppression des bâtiments");
+        setTitle("Consultation, modification et suppression des utilisateurs");
         setSize(1080, 720);
         setLocationRelativeTo(null);
 
@@ -61,66 +63,94 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
         btn_modif.setVisible(idRole != 3);
         btn_supp.setVisible(idRole != 3);
 
-        // Chargement des données
+        // Chargement des données$
+        affComboBox();
         aff_Tableau();
 
         setVisible(true);
     }
 
+    public String getNomById(int idRole) {
+        // Sécurisation : évite NullPointerException
+        M_Role role = lesRoles.get(idRole);
+        return (role != null) ? role.getNom(): null;
+    }
+    private int getIdByNom(String nomRole) {
+        int res = -1;
+        for (M_Role role : lesRoles.values()) {
+            if (role.getNom().equals(nomRole)) {
+                res = role.getId();
+            }
+        }
+        return res;
+    }
+    
+    public void affComboBox() {
+        cb_role.removeAllItems();
+        for (M_Role role : lesRoles.values()) {
+            cb_role.addItem(role.getNom());
+        }
+    }
+    
     private void aff_Tableau() {
         int ligne = 0;
 
-        tb_Batiment.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        tb_Batiment.setAutoCreateRowSorter(true);
-        tb_Batiment.setDefaultEditor(Object.class, null);
+        tb_utilisateur.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tb_utilisateur.setAutoCreateRowSorter(true);
+        tb_utilisateur.setDefaultEditor(Object.class, null);
 
-        dm_tb_batiment = (DefaultTableModel) tb_Batiment.getModel();
-        dm_tb_batiment.setRowCount(lesBatiments.size());
+        dm_tb_utilisateur = (DefaultTableModel) tb_utilisateur.getModel();
+        dm_tb_utilisateur.setRowCount(lesUtilisateurs.size());
 
         // Remplissage du tableau
-        for (Integer uneCle : lesBatiments.keySet()) {
-            unBatiment = lesBatiments.get(uneCle);
-            dm_tb_batiment.setValueAt(unBatiment.getId(), ligne, 0);
-            dm_tb_batiment.setValueAt(unBatiment.getCode(), ligne, 1);
-            dm_tb_batiment.setValueAt(unBatiment.getLibelle(), ligne, 2);
+        for (Integer uneCle : lesUtilisateurs.keySet()) {
+            unUtilisateur = lesUtilisateurs.get(uneCle);
+            dm_tb_utilisateur.setValueAt(unUtilisateur.getId(), ligne, 0);
+            dm_tb_utilisateur.setValueAt(unUtilisateur.getName(), ligne, 1);
+            dm_tb_utilisateur.setValueAt(getNomById(unUtilisateur.getId_role()), ligne, 2);
             ligne++;
         }
-
+        ftf_password.setVisible(false);
+        lb_password.setVisible(false);
         // Listener ajouté UNE SEULE FOIS
         if (!selectionListenerInitialized) {
-            tb_Batiment.getSelectionModel().addListSelectionListener(e -> {
-                int i = tb_Batiment.getSelectedRow();
+            tb_utilisateur.getSelectionModel().addListSelectionListener(e -> {
+                int i = tb_utilisateur.getSelectedRow();
                 if (i != -1) {
 
-                    int id = (Integer) tb_Batiment.getValueAt(i, 0);
-                    M_Batiment batimentSelected = lesBatiments.get(id);
+                    int id = (Integer) tb_utilisateur.getValueAt(i, 0);
+                    M_User UtilisateurSelected = lesUtilisateurs.get(id);
 
                     pn_btn.setVisible(true);
-                    idBatiment = batimentSelected.getId();
+                    idUtilisateur = UtilisateurSelected.getId();
 
-                    ftf_id.setText(String.valueOf(idBatiment));
-                    ftf_code.setText(batimentSelected.getCode());
-                    ftf_nom.setText(batimentSelected.getLibelle());
+                    ftf_id.setText(String.valueOf(idUtilisateur));
+                    ftf_name.setText(UtilisateurSelected.getName());
+                    ftf_email.setText(UtilisateurSelected.getEmail());
 
-                    if (batimentSelected.getCommentaire() != null) {
+                    String nomRole = getNomById(UtilisateurSelected.getId_role());
+                    if (nomRole != null) {
+                        cb_role.setSelectedItem(nomRole);
+                    }
+                    if (UtilisateurSelected.getCommentaire() != null) {
                         pn_commentaire.setVisible(true);
-                        ta_commentaire.setText(batimentSelected.getCommentaire());
+                        ta_commentaire.setText(UtilisateurSelected.getCommentaire());
                     } else {
                         pn_commentaire.setVisible(false);
                         ta_commentaire.setText("");
                     }
 
-                    if (batimentSelected.getCreated_at() != null) {
+                    if (UtilisateurSelected.getCreated_at() != null) {
                         ftf_created_at.setText(
-                                batimentSelected.getCreated_at().format(formatterLocalDateTime)
+                                UtilisateurSelected.getCreated_at().format(formatterLocalDateTime)
                         );
                     } else {
                         ftf_created_at.setText("");
                     }
 
-                    if (batimentSelected.getUpdated_at() != null) {
+                    if (UtilisateurSelected.getUpdated_at() != null) {
                         ftf_updated_at.setText(
-                                batimentSelected.getUpdated_at().format(formatterLocalDateTime)
+                                UtilisateurSelected.getUpdated_at().format(formatterLocalDateTime)
                         );
                     } else {
                         ftf_updated_at.setText("");
@@ -135,7 +165,7 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
     private void exit() {
         pn_table.setVisible(true);
         pn_btn.setVisible(false);
-        tb_Batiment.clearSelection();
+        tb_utilisateur.clearSelection();
         pn_CMS_Batiment.setVisible(false);
     }
 
@@ -155,9 +185,9 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
         lb_nom = new javax.swing.JLabel();
         lb_created_at = new javax.swing.JLabel();
         lb_update_at = new javax.swing.JLabel();
-        ftf_code = new javax.swing.JFormattedTextField();
+        ftf_name = new javax.swing.JFormattedTextField();
         ftf_id = new javax.swing.JFormattedTextField();
-        ftf_nom = new javax.swing.JFormattedTextField();
+        ftf_email = new javax.swing.JFormattedTextField();
         ftf_created_at = new javax.swing.JFormattedTextField();
         ftf_updated_at = new javax.swing.JFormattedTextField();
         pn_commentaire = new javax.swing.JPanel();
@@ -166,9 +196,13 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
         ta_commentaire = new javax.swing.JTextArea();
         btn_exit = new javax.swing.JButton();
         btn_save = new javax.swing.JButton();
+        lb_password = new javax.swing.JLabel();
+        ftf_password = new javax.swing.JFormattedTextField();
+        lb_role = new javax.swing.JLabel();
+        cb_role = new javax.swing.JComboBox<>();
         pn_table = new javax.swing.JPanel();
         sp_batiment = new javax.swing.JScrollPane();
-        tb_Batiment = new javax.swing.JTable();
+        tb_utilisateur = new javax.swing.JTable();
         pn_btn = new javax.swing.JPanel();
         btn_details = new javax.swing.JButton();
         btn_modif = new javax.swing.JButton();
@@ -180,16 +214,16 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         lb_titre.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
-        lb_titre.setText("Détails du bâtiments");
+        lb_titre.setText("Détails de l'utilisateur");
 
         lb_id.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         lb_id.setText("Id :");
 
         lb_code.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        lb_code.setText("Code :");
+        lb_code.setText("Nom :");
 
         lb_nom.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        lb_nom.setText("Nom :");
+        lb_nom.setText("Email :");
 
         lb_created_at.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         lb_created_at.setText("Créer le :");
@@ -236,6 +270,12 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
             }
         });
 
+        lb_password.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        lb_password.setText("Mot de passe :");
+
+        lb_role.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        lb_role.setText("Role :");
+
         javax.swing.GroupLayout pn_CMS_BatimentLayout = new javax.swing.GroupLayout(pn_CMS_Batiment);
         pn_CMS_Batiment.setLayout(pn_CMS_BatimentLayout);
         pn_CMS_BatimentLayout.setHorizontalGroup(
@@ -245,37 +285,46 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
                 .addComponent(lb_titre)
                 .addGap(381, 381, 381))
             .addGroup(pn_CMS_BatimentLayout.createSequentialGroup()
-                .addGroup(pn_CMS_BatimentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pn_CMS_BatimentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(pn_CMS_BatimentLayout.createSequentialGroup()
+                        .addGroup(pn_CMS_BatimentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lb_id, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(lb_code, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(lb_nom, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(pn_CMS_BatimentLayout.createSequentialGroup()
+                                .addGap(262, 262, 262)
+                                .addComponent(lb_password)))
+                        .addGap(26, 26, 26)
+                        .addGroup(pn_CMS_BatimentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(ftf_name, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
+                            .addComponent(ftf_email)
+                            .addComponent(ftf_id)
+                            .addComponent(ftf_password)))
                     .addGroup(pn_CMS_BatimentLayout.createSequentialGroup()
                         .addGap(197, 197, 197)
-                        .addGroup(pn_CMS_BatimentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(pn_CMS_BatimentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(pn_CMS_BatimentLayout.createSequentialGroup()
-                                .addGap(65, 65, 65)
-                                .addGroup(pn_CMS_BatimentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(lb_id)
-                                    .addComponent(lb_code)
-                                    .addComponent(lb_nom))
-                                .addGap(26, 26, 26)
-                                .addGroup(pn_CMS_BatimentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(ftf_code, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
-                                    .addComponent(ftf_nom)
-                                    .addComponent(ftf_id)))
-                            .addComponent(pn_commentaire, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(62, 62, 62)
+                                .addComponent(btn_save, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btn_exit, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pn_CMS_BatimentLayout.createSequentialGroup()
+                                .addComponent(lb_role)
+                                .addGap(18, 18, 18)
+                                .addComponent(cb_role, javax.swing.GroupLayout.PREFERRED_SIZE, 266, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(pn_CMS_BatimentLayout.createSequentialGroup()
                                 .addGap(6, 6, 6)
                                 .addGroup(pn_CMS_BatimentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(lb_created_at)
-                                    .addComponent(lb_update_at))
-                                .addGap(26, 26, 26)
-                                .addGroup(pn_CMS_BatimentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(ftf_created_at)
-                                    .addComponent(ftf_updated_at)))))
-                    .addGroup(pn_CMS_BatimentLayout.createSequentialGroup()
-                        .addGap(259, 259, 259)
-                        .addComponent(btn_save, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btn_exit, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addComponent(pn_commentaire, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(pn_CMS_BatimentLayout.createSequentialGroup()
+                                        .addGroup(pn_CMS_BatimentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(lb_created_at)
+                                            .addComponent(lb_update_at))
+                                        .addGap(26, 26, 26)
+                                        .addGroup(pn_CMS_BatimentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(ftf_created_at, javax.swing.GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE)
+                                            .addComponent(ftf_updated_at))))))))
+                .addContainerGap(423, Short.MAX_VALUE))
         );
         pn_CMS_BatimentLayout.setVerticalGroup(
             pn_CMS_BatimentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -289,12 +338,20 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pn_CMS_BatimentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lb_code)
-                    .addComponent(ftf_code, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(ftf_name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pn_CMS_BatimentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lb_nom)
-                    .addComponent(ftf_nom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(ftf_email, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(pn_CMS_BatimentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lb_password)
+                    .addComponent(ftf_password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(pn_CMS_BatimentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cb_role, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lb_role))
+                .addGap(21, 21, 21)
                 .addComponent(pn_commentaire, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pn_CMS_BatimentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -308,10 +365,10 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
                 .addGroup(pn_CMS_BatimentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_save, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btn_exit, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(208, Short.MAX_VALUE))
+                .addContainerGap(118, Short.MAX_VALUE))
         );
 
-        tb_Batiment.setModel(new javax.swing.table.DefaultTableModel(
+        tb_utilisateur.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
                 {null, null, null},
@@ -319,11 +376,11 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
                 {null, null, null}
             },
             new String [] {
-                "Id", "Code", "Libelle"
+                "Id", "Name", "Role"
             }
         ));
-        tb_Batiment.getTableHeader().setReorderingAllowed(false);
-        sp_batiment.setViewportView(tb_Batiment);
+        tb_utilisateur.getTableHeader().setReorderingAllowed(false);
+        sp_batiment.setViewportView(tb_utilisateur);
 
         btn_details.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         btn_details.setText("Détails");
@@ -445,31 +502,34 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
 
     private void btn_detailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_detailsActionPerformed
         pn_table.setVisible(false);
-        ftf_code.setEditable(false);
+        ftf_name.setEditable(false);
         ftf_created_at.setEditable(false);
         ftf_id.setEditable(false);
-        ftf_nom.setEditable(false);
+        ftf_email.setEditable(false);
         ftf_updated_at.setEditable(false);
         ta_commentaire.setEditable(false);
         pn_CMS_Batiment.setVisible(true);
+        cb_role.setEnabled(false);
     }//GEN-LAST:event_btn_detailsActionPerformed
 
     private void btn_modifActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_modifActionPerformed
-        if (tb_Batiment.getSelectionModel().isSelectionEmpty()) {
+        if (tb_utilisateur.getSelectionModel().isSelectionEmpty()) {
             JOptionPane.showMessageDialog(
                     this,
-                    "Aucun bâtiment n'est sélectionné.",
+                    "Aucun utilisateur n'est sélectionné.",
                     "Erreur de sélection",
                     JOptionPane.ERROR_MESSAGE);
         } else {
             modeEdition = true;
+            lb_password.setVisible(true);
+            ftf_password.setVisible(true);
             pn_table.setVisible(true);
             ftf_id.setEditable(false);
-            ftf_code.setEditable(true);
-            ftf_nom.setEditable(true);
+            ftf_name.setEditable(true);
+            ftf_email.setEditable(true);
             pn_commentaire.setVisible(true);
             ta_commentaire.setEditable(true);
-
+            cb_role.setEnabled(true);
             ftf_created_at.setEditable(false);
             ftf_updated_at.setEditable(false);
 
@@ -486,6 +546,7 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
                     "Êtes-vous sûr de vouloir annuler votre saisie ?",
                     "Confirmation",
                     JOptionPane.YES_NO_OPTION);
+            affComboBox();
             if (reponse == JOptionPane.YES_OPTION) {
                 exit();
                 btn_exit.setText("Fermer");
@@ -497,49 +558,41 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
     }//GEN-LAST:event_btn_exitActionPerformed
 
     private void btn_suppActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_suppActionPerformed
-        if (tb_Batiment.getSelectionModel().isSelectionEmpty()) {
+        if (tb_utilisateur.getSelectionModel().isSelectionEmpty()) {
             JOptionPane.showMessageDialog(
                     this,
-                    "Aucun bâtiment n'est sélectionné.",
+                    "Aucun utilisateur n'est sélectionné.",
                     "Erreur de sélection",
                     JOptionPane.ERROR_MESSAGE);
         } else {
             int confirm = JOptionPane.showConfirmDialog(
                     this,
-                    "Êtes-vous sûr de vouloir supprimer ce bâtiment ?",
+                    "Êtes-vous sûr de vouloir supprimer cet utilisateur ?",
                     "Confirmation",
                     JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
                 try {
-                    gestionBatiment.supp_Batiment(idBatiment);
-                    lesBatiments.remove(idBatiment);
-                    aff_Tableau();
+                    gestionUtilisateur.supp_Utilisateur(idUtilisateur);
                 } catch (Exception ex) {
-                    int deleteBat = JOptionPane.showConfirmDialog(
-                            this,
-                            "Des salles sont liées à ce bâtiment, voulez voulez les supprimer ?",
-                            "Confirmation",
-                            JOptionPane.YES_NO_OPTION);
-                    if (deleteBat == JOptionPane.YES_OPTION) {
-                        try {
-                            gestionBatiment.supp_Batiment_avec_salle(idBatiment);
-                        } catch (Exception ex1) {
-                            Logger.getLogger(V_CMS_Batiment.class.getName()).log(Level.SEVERE, null, ex1);
-                        }
-                    }
+                    Logger.getLogger(V_CMS_Utilisateur.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                    lesUtilisateurs.remove(idUtilisateur);
+                    aff_Tableau();
+                
             }
         }
 
     }//GEN-LAST:event_btn_suppActionPerformed
 
     private void btn_saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_saveActionPerformed
-        String vCode = ftf_code.getText();
-        String vLibelle = ftf_nom.getText();
+        String vName = ftf_name.getText();
+        String vEmail = ftf_email.getText();
         String vCommentaire = ta_commentaire.getText();
+        int idRole = getIdByNom((String) cb_role.getSelectedItem());
+        String password = "";
         int vId;
         // Vérification des champs texte
-        JTextField[] champs = new JTextField[]{ftf_id, ftf_code, ftf_nom};
+        JTextField[] champs = new JTextField[]{ftf_id, ftf_name, ftf_email};
         for (JTextField champ : champs) {
             if (champ.getText() == null || champ.getText().isBlank()) {
                 JOptionPane.showMessageDialog(
@@ -573,20 +626,24 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
         }
         // Appel de la modification
         try {
-            if (gestionBatiment.batimentExisteModification(idBatiment, vCode, vLibelle)) {
-                System.out.println(ftf_code.getText() + "   " + ftf_nom.getText());
-                JOptionPane.showMessageDialog(this, "Le code ou le libelle est déjà utilisé", "Erreur", JOptionPane.ERROR_MESSAGE);
+            if (gestionUtilisateur.utilisateurExisteModification(idUtilisateur, vEmail)) {
+                JOptionPane.showMessageDialog(this, "L'email est déjà utilisé", "Erreur", JOptionPane.ERROR_MESSAGE);
                 return;
             }
         } catch (Exception ex) {
-            Logger.getLogger(V_CMS_Batiment.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(V_CMS_Utilisateur.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
-            gestionBatiment.modif_batiment(vId, vCode, vLibelle, vCommentaire);
+            if(ftf_password.getText().isBlank()){
+            gestionUtilisateur.modif_Utilisateur_No_Password(idUtilisateur, vName, vEmail, vCommentaire, idRole);
+            }else{
+                password = BCrypt.withDefaults().hashToString(12, ftf_password.getText().toCharArray());
+                gestionUtilisateur.modif_Utilisateur_Password(idUtilisateur, vName, vEmail, vCommentaire, password, idRole);
+            }
             btn_exit.setText("Fermer");
             modeEdition = false;
         } catch (Exception ex) {
-            Logger.getLogger(V_CMS_Batiment.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(V_CMS_Utilisateur.class.getName()).log(Level.SEVERE, null, ex);
         }
 
 
@@ -609,20 +666,21 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(V_CMS_Batiment.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(V_CMS_Utilisateur.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(V_CMS_Batiment.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(V_CMS_Utilisateur.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(V_CMS_Batiment.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(V_CMS_Utilisateur.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(V_CMS_Batiment.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(V_CMS_Utilisateur.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                V_CMS_Batiment dialog = new V_CMS_Batiment(new javax.swing.JFrame(), true);
+                V_CMS_Utilisateur dialog = new V_CMS_Utilisateur(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -640,10 +698,12 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
     private javax.swing.JButton btn_modif;
     private javax.swing.JButton btn_save;
     private javax.swing.JButton btn_supp;
-    private javax.swing.JFormattedTextField ftf_code;
+    private javax.swing.JComboBox<String> cb_role;
     private javax.swing.JFormattedTextField ftf_created_at;
+    private javax.swing.JFormattedTextField ftf_email;
     private javax.swing.JFormattedTextField ftf_id;
-    private javax.swing.JFormattedTextField ftf_nom;
+    private javax.swing.JFormattedTextField ftf_name;
+    private javax.swing.JFormattedTextField ftf_password;
     private javax.swing.JFormattedTextField ftf_updated_at;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lb_code;
@@ -651,6 +711,8 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
     private javax.swing.JLabel lb_created_at;
     private javax.swing.JLabel lb_id;
     private javax.swing.JLabel lb_nom;
+    private javax.swing.JLabel lb_password;
+    private javax.swing.JLabel lb_role;
     private javax.swing.JLabel lb_titre;
     private javax.swing.JLabel lb_update_at;
     private javax.swing.JMenuBar mb_menu;
@@ -662,6 +724,6 @@ public class V_CMS_Batiment extends javax.swing.JDialog {
     private javax.swing.JPanel pn_table;
     private javax.swing.JScrollPane sp_batiment;
     private javax.swing.JTextArea ta_commentaire;
-    private javax.swing.JTable tb_Batiment;
+    private javax.swing.JTable tb_utilisateur;
     // End of variables declaration//GEN-END:variables
 }

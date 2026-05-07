@@ -58,6 +58,11 @@ public class V_A_Batiment extends javax.swing.JDialog {
         mi_fermer = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         lb_titre.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
         lb_titre.setText("Ajout d'un bâtiment");
@@ -160,7 +165,13 @@ public class V_A_Batiment extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void mi_fermerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mi_fermerActionPerformed
-        setVisible(false);
+        int result = JOptionPane.showConfirmDialog(this, "Êtes vous sûr de vouloir d'annuler votre saisie ?", "Confirmation annulation", JOptionPane.YES_NO_OPTION);
+        if (result == JOptionPane.YES_OPTION) {
+            ftf_code.setText("");
+            ftf_libelle.setText("");
+            ta_commentaire.setText("");
+            setVisible(false);
+        }
     }//GEN-LAST:event_mi_fermerActionPerformed
 
     private void btn_addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_addActionPerformed
@@ -229,6 +240,16 @@ public class V_A_Batiment extends javax.swing.JDialog {
             setVisible(false);
         }
     }//GEN-LAST:event_btn_cancelActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        int result = JOptionPane.showConfirmDialog(this, "Êtes vous sûr de vouloir d'annuler votre saisie ?", "Confirmation annulation", JOptionPane.YES_NO_OPTION);
+        if (result == JOptionPane.YES_OPTION) {
+            ftf_code.setText("");
+            ftf_libelle.setText("");
+            ta_commentaire.setText("");
+            setVisible(false);
+        }
+    }//GEN-LAST:event_formWindowClosing
 
     /**
      * @param args the command line arguments

@@ -150,6 +150,11 @@ public class M_Role {
                 + ", updated_at=" + updated_at + "}\n";
     }
 
+    public int getId() {
+        return id;
+    }
+
+    
     // ----------------------------------------------------------
     // TESTS
     // ----------------------------------------------------------
@@ -192,4 +197,28 @@ public class M_Role {
 //    public void setNom(String nom) {
 //        this.nom = nom;
 //    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getNom() {
+        return nom;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public String getCommentaire() {
+        return commentaire;
+    }
+
+    public void setCommentaire(String commentaire) {
+        this.commentaire = commentaire;
+    }
 }

@@ -9,6 +9,30 @@
     <!-- FAT JAR CONFIGURATION -->
     <!-- ===================== -->
 
+    <target name="-post-compile" depends="-copy-private-config,-copy-example-config"/>
+
+    <target name="-post-jar" depends="-copy-private-config,-copy-example-config"/>
+
+    <target name="-check-private-config">
+        <available file="config/application.properties" property="private.config.exists"/>
+    </target>
+
+    <target name="-copy-private-config" depends="-check-private-config" if="private.config.exists">
+        <mkdir dir="${dist.dir}/config"/>
+        <copy
+            file="config/application.properties"
+            tofile="${dist.dir}/config/application.properties"
+            overwrite="true"/>
+    </target>
+
+    <target name="-copy-example-config" depends="-check-private-config" unless="private.config.exists">
+        <mkdir dir="${dist.dir}/config"/>
+        <copy
+            file="${src.ressources.dir}/config/exemple.application.properties"
+            tofile="${dist.dir}/config/application.properties"
+            overwrite="true"/>
+    </target>
+
     <target name="fat-jar" depends="jar">
 
         <property name="fatjar.name" value="Pj_Sonde-fat.jar"/>
@@ -16,7 +40,9 @@
         <jar destfile="${dist.dir}/${fatjar.name}" duplicate="fail">
 
             <!-- Classes + resources compilées -->
-            <fileset dir="${build.classes.dir}"/>
+            <fileset dir="${build.classes.dir}">
+                <exclude name="ressources/config/application.properties"/>
+            </fileset>
 
             <!-- Dépendances : ON SUPPRIME TOUT META-INF -->
             <zipgroupfileset dir="${dist.dir}/lib" includes="**/*.jar">

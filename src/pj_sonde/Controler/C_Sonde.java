@@ -66,4 +66,33 @@ public class C_Sonde {
         uneSonde = new M_Sonde(db, code, nom, adresse_ip, adresse_mac, date_achat, commentaire, idType, codeUnite);
         lesSondes.put(uneCle, uneSonde);
     }
+
+    public void modif_sonde(int idSonde, String code, String nom, String adresse_ip, String adresse_mac, LocalDate date_achat, String commentaire, int idType, String codeUnite) throws Exception {
+        uneSonde = new M_Sonde(db, idSonde);
+        uneSonde.setCode(code);
+        uneSonde.setNom(nom);
+        uneSonde.setAdresse_ip(adresse_ip);
+        uneSonde.setAdresse_mac(adresse_mac);
+        uneSonde.setDate_achat(date_achat);
+        uneSonde.setCommentaire(commentaire);
+        uneSonde.setId_type(idType);
+        uneSonde.setCode_unite(codeUnite);
+        System.out.println(codeUnite);
+        uneSonde.update();
+        aff_CMS_Sonde(idRole);
+    }
+    public void deleteSonde(int idSonde) throws Exception{
+        uneSonde = new M_Sonde(db, idSonde);
+        uneSonde.delete();
+        aff_CMS_Sonde(idRole);
+    }
+
+    public boolean sondeExiste(String code, String nom, String mac) throws Exception {
+        return M_Sonde.existe(db, code, nom, mac);
+    }
+
+    public boolean sondeExisteModification(int idSonde, String code, String nom, String mac) throws Exception {
+        return M_Sonde.existeModification(db, idSonde, code, nom, mac);
+    }
+
 }

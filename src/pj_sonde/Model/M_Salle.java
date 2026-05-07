@@ -3,12 +3,11 @@ package pj_sonde.Model;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
-import pj_sonde.Cl_Connection;
 import pj_sonde.Db_mariadb;
 
 public class M_Salle {
 
-    private Db_mariadb db;
+    private final Db_mariadb db;
     private int id;
     private String code;
     private String libelle;
@@ -97,6 +96,10 @@ public class M_Salle {
         db.sqlExec("DELETE FROM mcd_salles WHERE id=" + id + ";");
     }
 
+    public static void deleteBuilding(Db_mariadb db, int idBuilding) throws SQLException {
+        db.sqlExec("DELETE FROM mcd_salles WHERE id_batiment = " + idBuilding + ";");
+    }
+
     // GET RECORDS
     public static LinkedHashMap<Integer, M_Salle> getRecords(Db_mariadb db, String where) throws SQLException {
         LinkedHashMap<Integer, M_Salle> map = new LinkedHashMap<>();
@@ -134,7 +137,8 @@ public class M_Salle {
     }
 
     public static boolean existeModification(Db_mariadb db, int idSalle, String code, String libelle) throws Exception {
-        LinkedHashMap<Integer, M_Salle> result = getRecords(db, "id != " + idSalle + " AND (code = '" + code + "' OR libelle = '" + libelle + "')");
+        LinkedHashMap<Integer, M_Salle> result = getRecords(db, "id != " + idSalle + " AND (code = '"
+                + code + "' OR libelle = '" + libelle + "')");
         return !result.isEmpty();
     }
 

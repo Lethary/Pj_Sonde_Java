@@ -11,5 +11,6 @@
 Thumbs.db
 
 # Config sensible
+/config/application.properties
 /src/ressources/config/application.properties
 /out/*

@@ -94,7 +94,7 @@ public class M_Batiment {
     // GET RECORDS
     public static LinkedHashMap<Integer, M_Batiment> getRecords(Db_mariadb db, String where) throws SQLException {
         LinkedHashMap<Integer, M_Batiment> map = new LinkedHashMap<>();
-        ResultSet res = db.sqlSelect("SELECT * FROM mcd_batiments WHERE " + where + " ORDER BY libelle;");
+        ResultSet res = db.sqlSelect("SELECT * FROM mcd_batiments WHERE " + where + " ORDER BY id ;");
 
         while (res.next()) {
             int id = res.getInt("id");
@@ -122,12 +122,14 @@ public class M_Batiment {
     }
 
     public static boolean existe(Db_mariadb db, String code, String libelle) throws SQLException {
-        LinkedHashMap<Integer, M_Batiment> result = getRecords(db, "code = '" + code + "' OR libelle ='" + libelle +"'");
+        LinkedHashMap<Integer, M_Batiment> result = getRecords(db, "code = '" + code + "' OR libelle = '" + libelle + "'");
         return !result.isEmpty();
     }
-    
-    public static boolean existeModification(Db_mariadb db,int idBatiment, String code, String libelle) throws SQLException {
-        LinkedHashMap<Integer, M_Batiment> result = getRecords(db,"id != " + idBatiment + " AND code = '" + code + "' OR libelle ='" + libelle +"'");
+
+    public static boolean existeModification(Db_mariadb db, int idBatiment, String code, String libelle) throws SQLException {
+        LinkedHashMap<Integer, M_Batiment> result = getRecords(db,
+                "id != " + idBatiment
+                + " AND (code = '" + code + "' OR libelle = '" + libelle + "')");
         return !result.isEmpty();
     }
 
@@ -192,7 +194,6 @@ public class M_Batiment {
     public void setUpdated_at(LocalDateTime updated_at) {
         this.updated_at = updated_at;
     }
-    
 
     // TESTS
 //    public static void main(String[] args) throws Exception {
@@ -209,6 +210,7 @@ public class M_Batiment {
 //        M_Batiment b2 = new M_Batiment(base, b1.getId());
 //        System.out.println(b2);
 //
+
 ////        System.out.println("=== UPDATE BATIMENT ===");
 ////        b2.commentaire = "Commentaire modifié";
 ////        b2.update();

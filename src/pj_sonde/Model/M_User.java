@@ -43,7 +43,6 @@ public class M_User {
             String name,
             String email,
             String password,
-            String remember_token,
             String commentaire,
             Integer id_role) throws SQLException {
 
@@ -55,14 +54,13 @@ public class M_User {
         this.id_role = id_role;
 
         String sql = "INSERT INTO mcd_users "
-                + "(name, email, password, remember_token, commentaire, id_role, created_at, updated_at) VALUES ("
+                + "(name, email, password, commentaire, created_at, updated_at, id_role) VALUES ("
                 + "'" + name + "', "
                 + "'" + email + "', "
                 + "'" + password + "', "
-                + (remember_token != null ? "'" + remember_token + "'" : "NULL") + ", "
                 + (commentaire != null ? "'" + commentaire + "'" : "NULL") + ", "
-                + id_role + ", "
-                + "CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());";
+                + "CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP(), "
+                + id_role + "); ";
 
         db.sqlExec(sql);
 
@@ -105,11 +103,22 @@ public class M_User {
     // ----------------------------------------------------------
     // UPDATE
     // ----------------------------------------------------------
-    public void update() throws SQLException {
+    public void updateWithPassword() throws SQLException {
         String sql = "UPDATE mcd_users SET "
                 + "name='" + name + "', "
                 + "email='" + email + "', "
                 + "password='" + password + "', "
+                + "commentaire=" + (commentaire != null ? "'" + commentaire + "'" : "NULL") + ", "
+                + "id_role=" + id_role + ", "
+                + "updated_at=CURRENT_TIMESTAMP() "
+                + "WHERE id=" + id + ";";
+
+        db.sqlExec(sql);
+    }
+    public void updateWithoutPassword() throws SQLException {
+        String sql = "UPDATE mcd_users SET "
+                + "name='" + name + "', "
+                + "email='" + email + "', "
                 + "commentaire=" + (commentaire != null ? "'" + commentaire + "'" : "NULL") + ", "
                 + "id_role=" + id_role + ", "
                 + "updated_at=CURRENT_TIMESTAMP() "
@@ -136,7 +145,6 @@ public class M_User {
 
         while (res.next()) {
 
-            Timestamp e = res.getTimestamp("email_verified_at");
             Timestamp c = res.getTimestamp("created_at");
             Timestamp u = res.getTimestamp("updated_at");
 
@@ -182,6 +190,16 @@ public class M_User {
         return unUtil;
     }
 
+    public static boolean existe(Db_mariadb db, String email) throws SQLException {
+        LinkedHashMap<Integer, M_User> result = getRecords(db, "email = '" + email+ "'");
+        return !result.isEmpty();
+    }
+    
+    public static boolean existeModification(Db_mariadb db, int idUtilsateur, String email) throws Exception {
+        LinkedHashMap<Integer, M_User> result = getRecords(db, "id != " + idUtilsateur + " AND (email = '" + email + "')");
+        return !result.isEmpty();
+    }
+    
     @Override
     public String toString() {
         return "User{id=" + id
@@ -287,6 +305,10 @@ public class M_User {
 
     public void setUpdated_at(LocalDateTime updated_at) {
         this.updated_at = updated_at;
+    }
+
+    public String getName() {
+        return name;
     }
 
 }

@@ -7,12 +7,11 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
-import pj_sonde.Cl_Connection;
 import pj_sonde.Db_mariadb;
 
 public class M_Sonde {
 
-    private Db_mariadb db;
+    private final Db_mariadb db;
     private int id;
     private int id_type; // correspond à la colonne id_type dans la BDD
     private String code;
@@ -297,6 +296,20 @@ public class M_Sonde {
         return map;
     }
 
+    
+    public static boolean existe(Db_mariadb db, String code, String nom, String mac) throws Exception {
+        LinkedHashMap<Integer, M_Sonde> result = getRecords(db, "code = '" + code + "' OR adresse_mac ='" + mac + "' OR nom ='" + nom + "'");
+        return !result.isEmpty();
+    }
+
+    public static boolean existeModification(Db_mariadb db, int idSonde, String code, String nom, String mac) throws Exception {
+        LinkedHashMap<Integer, M_Sonde> result = getRecords(db, 
+                "id != " + idSonde 
+                + " AND (code = '" + code + "' OR nom = '" + nom + "' OR adresse_mac = '" + mac + "')");
+        return !result.isEmpty();
+    }
+    
+    
     // -------------------------------------------------------------------
     // TO STRING
     // -------------------------------------------------------------------
