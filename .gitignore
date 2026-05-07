@@ -14,3 +14,4 @@ Thumbs.db
 /config/application.properties
 /src/ressources/config/application.properties
 /out/*
+nbproject/private/private.xml
